@@ -16,9 +16,9 @@ export default {
                 heading: ['Outfit', ...defaultTheme.fontFamily.sans],
             },
             colors: {
-                primary: '#047857', // Emerald 700 - Balanced nature green
+                primary: 'var(--color-primary, #047857)', // Dynamic primary color
                 secondary: '#059669', // Emerald 600 - Slightly lighter for hover
-                accent: '#ea580c', // Orange 600 - Warm, grounded accent
+                accent: 'var(--color-accent, #ea580c)', // Dynamic accent color
                 background: '#f8fafc', // Slate 50
                 charcoal: '#1e293b', // Slate 800
             }

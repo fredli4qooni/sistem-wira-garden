@@ -38,13 +38,13 @@
             <div class="relative z-20 w-[500px] bg-white/10 backdrop-blur-xl border border-white/20 rounded-[2.5rem] p-4 shadow-2xl transform hover:-translate-y-2 transition-transform duration-500">
                 <!-- Image Container -->
                 <div class="w-full h-[320px] rounded-[2rem] overflow-hidden relative shadow-lg group">
-                    <img src="{{ asset('images/gambar-keluarga.png') }}" alt="Keluarga Wisata Alam" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700">
+                    <img src="{{ asset(setting('hero_image', 'images/gambar-keluarga.png')) }}" alt="Keluarga Wisata Alam" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700">
                 </div>
                 
                 <!-- Content Area -->
                 <div class="p-6 pb-2 text-center">
-                    <h3 class="font-bold text-4xl text-white mb-2 drop-shadow-sm" style="font-family: 'Caveat', cursive;">Wisata Alam Keluarga</h3>
-                    <p class="text-gray-200 text-base leading-relaxed font-light">Ciptakan momen tak terlupakan di alam bebas.</p>
+                    <h3 class="font-bold text-4xl text-white mb-2 drop-shadow-sm" style="font-family: 'Caveat', cursive;">{{ setting('hero_title', 'Wisata Alam Keluarga') }}</h3>
+                    <p class="text-gray-200 text-base leading-relaxed font-light">{{ setting('hero_subtitle', 'Ciptakan momen tak terlupakan di alam bebas.') }}</p>
                 </div>
 
                 <!-- Floating Badge -->

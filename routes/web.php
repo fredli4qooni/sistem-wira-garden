@@ -40,6 +40,8 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
     Route::resource('galleries', AdminGalleryController::class);
     Route::resource('tickets', TicketTypeController::class);
     Route::resource('quotas', VisitQuotaController::class);
+    Route::get('/settings', [App\Http\Controllers\Admin\SettingController::class, 'index'])->name('settings.index');
+    Route::post('/settings', [App\Http\Controllers\Admin\SettingController::class, 'store'])->name('settings.store');
 });
 
 Route::middleware('auth')->group(function () {

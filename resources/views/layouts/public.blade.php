@@ -14,6 +14,13 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <style>
+        :root {
+            --color-primary: {{ setting('color_primary', '#047857') }};
+            --color-accent: {{ setting('color_accent', '#ea580c') }};
+        }
+    </style>
 </head>
 <body class="flex flex-col min-h-screen">
     <!-- Navbar -->
