@@ -30,9 +30,12 @@
                             <img src="{{ Storage::url($destination->category->icon_value) }}" alt="Icon" class="w-3.5 h-3.5 rounded-sm object-cover">
                         @elseif($destination->category->icon_type == 'svg' && $destination->category->icon_value)
                             <div class="text-green-600 flex items-center justify-center">
-                                @if(str_contains($destination->category->icon_value, '<svg'))
+                                @php
+                                    $iconVal = html_entity_decode($destination->category->icon_value);
+                                @endphp
+                                @if(str_contains($iconVal, '<svg'))
                                     <div class="[&>svg]:w-3.5 [&>svg]:h-3.5">
-                                        {!! $destination->category->icon_value !!}
+                                        {!! $iconVal !!}
                                     </div>
                                 @else
                                     <i class="{{ $destination->category->icon_value }} text-sm"></i>
@@ -55,9 +58,12 @@
                                 <img src="{{ Storage::url($destination->category->icon_value) }}" alt="Icon" class="w-full h-full object-cover">
                             @elseif($destination->category && $destination->category->icon_type == 'svg' && $destination->category->icon_value)
                                 <div class="text-green-600 flex items-center justify-center h-full">
-                                    @if(str_contains($destination->category->icon_value, '<svg'))
+                                    @php
+                                        $iconVal2 = html_entity_decode($destination->category->icon_value);
+                                    @endphp
+                                    @if(str_contains($iconVal2, '<svg'))
                                         <div class="[&>svg]:w-5 [&>svg]:h-5">
-                                            {!! $destination->category->icon_value !!}
+                                            {!! $iconVal2 !!}
                                         </div>
                                     @else
                                         <i class="{{ $destination->category->icon_value }} text-xl"></i>
