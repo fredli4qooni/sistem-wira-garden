@@ -7,10 +7,11 @@
 
     <title>{{ config('app.name', 'Wira Garden') }}</title>
 
-    <!-- Fonts -->
+    <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -41,8 +42,16 @@
                 <!-- Desktop Menu -->
                 <div class="hidden sm:flex sm:items-center sm:space-x-8">
                     <a href="{{ url('/') }}" class="text-charcoal hover:text-secondary px-3 py-2 font-medium transition-colors">Beranda</a>
+                    <a href="{{ route('about') }}" class="text-charcoal hover:text-secondary px-3 py-2 font-medium transition-colors">Tentang Kami</a>
                     <a href="{{ route('destinations.index') }}" class="text-charcoal hover:text-secondary px-3 py-2 font-medium transition-colors">Destinasi</a>
+                    <a href="{{ route('facilities.index') }}" class="text-charcoal hover:text-secondary px-3 py-2 font-medium transition-colors">Fasilitas</a>
+                    <a href="{{ route('tickets.index') }}" class="text-charcoal hover:text-secondary px-3 py-2 font-medium transition-colors">Harga Tiket</a>
                     <a href="{{ route('galleries.index') }}" class="text-charcoal hover:text-secondary px-3 py-2 font-medium transition-colors">Galeri</a>
+                    
+                    <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', setting('contact_whatsapp', '6281234567890')) }}" target="_blank" class="text-charcoal hover:text-primary transition-colors flex items-center justify-center p-2 rounded-full hover:bg-primary/5" title="Hubungi Kami">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                    </a>
+                    
                     <a href="{{ route('reservations.create') }}" class="btn-primary ml-4 !px-6 !py-2 text-sm shadow-md">Reservasi</a>
                 </div>
 
@@ -59,11 +68,18 @@
         </div>
 
         <!-- Mobile Menu -->
-        <div x-show="open" style="display: none;" class="sm:hidden bg-white border-t border-gray-100 shadow-xl absolute w-full rounded-b-2xl">
-            <div class="px-4 pt-2 pb-4 space-y-2">
-                <a href="{{ url('/') }}" class="block px-4 py-3 text-base font-medium text-charcoal hover:text-secondary hover:bg-gray-50 rounded-xl">Beranda</a>
-                <a href="{{ route('destinations.index') }}" class="block px-4 py-3 text-base font-medium text-charcoal hover:text-secondary hover:bg-gray-50 rounded-xl">Destinasi</a>
-                <a href="{{ route('galleries.index') }}" class="block px-4 py-3 text-base font-medium text-charcoal hover:text-secondary hover:bg-gray-50 rounded-xl">Galeri</a>
+        <div x-show="open" class="sm:hidden bg-white/95 backdrop-blur-md border-t border-gray-100 shadow-xl" x-transition style="display: none;">
+            <div class="px-4 pt-2 pb-6 space-y-1">
+                <a href="{{ url('/') }}" class="block px-3 py-3 text-base font-medium text-charcoal hover:text-secondary hover:bg-secondary/5 rounded-xl">Beranda</a>
+                <a href="{{ route('about') }}" class="block px-3 py-3 text-base font-medium text-charcoal hover:text-secondary hover:bg-secondary/5 rounded-xl">Tentang Kami</a>
+                <a href="{{ route('destinations.index') }}" class="block px-3 py-3 text-base font-medium text-charcoal hover:text-secondary hover:bg-secondary/5 rounded-xl">Destinasi</a>
+                <a href="{{ route('facilities.index') }}" class="block px-3 py-3 text-base font-medium text-charcoal hover:text-secondary hover:bg-secondary/5 rounded-xl">Fasilitas</a>
+                <a href="{{ route('tickets.index') }}" class="block px-3 py-3 text-base font-medium text-charcoal hover:text-secondary hover:bg-secondary/5 rounded-xl">Harga Tiket</a>
+                <a href="{{ route('galleries.index') }}" class="block px-3 py-3 text-base font-medium text-charcoal hover:text-secondary hover:bg-secondary/5 rounded-xl">Galeri</a>
+                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', setting('contact_whatsapp', '6281234567890')) }}" target="_blank" class="block px-3 py-3 text-base font-medium text-charcoal hover:text-secondary hover:bg-secondary/5 rounded-xl flex items-center gap-3">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                    Hubungi Kami
+                </a>
                 <a href="{{ route('reservations.create') }}" class="block w-full text-center btn-primary mt-4">Reservasi Sekarang</a>
             </div>
         </div>

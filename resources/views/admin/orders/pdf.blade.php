@@ -57,7 +57,12 @@
                 <tr>
                     <td class="text-center">{{ $index + 1 }}</td>
                     <td>{{ $order->created_at->format('d/m/Y') }}</td>
-                    <td><strong>{{ $order->order_code }}</strong></td>
+                    <td>
+                        <strong>{{ $order->order_code }}</strong><br>
+                        @if($order->destination)
+                        <small>{{ $order->destination->name }}</small>
+                        @endif
+                    </td>
                     <td>{{ $order->visitor_name }}</td>
                     <td>{{ $order->phone }}<br><small>{{ $order->email }}</small></td>
                     <td>{{ \Carbon\Carbon::parse($order->visit_date)->format('d/m/Y') }}</td>

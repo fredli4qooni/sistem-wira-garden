@@ -50,6 +50,22 @@
         </div>
     </div>
 
+    <!-- Charts Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 lg:col-span-2">
+            <h3 class="text-sm font-bold text-gray-700 mb-4">Grafik Reservasi (Bulan Ini)</h3>
+            <div class="h-64 relative">
+                <canvas id="dashboardLineChart"></canvas>
+            </div>
+        </div>
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <h3 class="text-sm font-bold text-gray-700 mb-4">Status Reservasi (Bulan Ini)</h3>
+            <div class="h-64 flex justify-center relative">
+                <canvas id="dashboardDonutChart"></canvas>
+            </div>
+        </div>
+    </div>
+
     <!-- Recent Orders Section -->
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         <div class="px-6 py-5 border-b border-gray-100 bg-gray-50/50 flex justify-between items-center">
@@ -103,4 +119,76 @@
             </table>
         </div>
     </div>
+
+    @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Data for charts
+            const lineDataKeys = {!! isset($reservationsPerDay) ? json_encode($reservationsPerDay->keys()) : '[]' !!};
+            const lineDataValues = {!! isset($reservationsPerDay) ? json_encode($reservationsPerDay->values()) : '[]' !!};
+            const statusCounts = {!! isset($statusCounts) ? json_encode($statusCounts) : '{}' !!};
+
+            if (document.getElementById('dashboardLineChart')) {
+                const ctxLine = document.getElementById('dashboardLineChart').getContext('2d');
+                new Chart(ctxLine, {
+                    type: 'line',
+                    data: {
+                        labels: lineDataKeys,
+                        datasets: [{
+                            label: 'Jumlah Reservasi',
+                            data: lineDataValues,
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            borderWidth: 2,
+                            fill: true,
+                            pointBackgroundColor: '#fff',
+                            pointBorderColor: '#3b82f6',
+                            pointBorderWidth: 2,
+                            pointRadius: 4,
+                            pointHoverRadius: 6,
+                            tension: 0.3
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: { beginAtZero: true, ticks: { stepSize: 1 } },
+                            x: { grid: { display: false } }
+                        }
+                    }
+                });
+            }
+
+            if (document.getElementById('dashboardDonutChart')) {
+                const ctxDonut = document.getElementById('dashboardDonutChart').getContext('2d');
+                new Chart(ctxDonut, {
+                    type: 'doughnut',
+                    data: {
+                        labels: Object.keys(statusCounts),
+                        datasets: [{
+                            data: Object.values(statusCounts),
+                            backgroundColor: ['#3b82f6', '#f59e0b', '#10b981', '#ef4444'],
+                            borderWidth: 0,
+                            hoverOffset: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '65%',
+                        plugins: {
+                            legend: {
+                                position: 'right',
+                                labels: { usePointStyle: true, boxWidth: 8 }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+    @endpush
 </x-app-layout>

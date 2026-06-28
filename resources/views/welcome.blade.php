@@ -2,103 +2,206 @@
 
 @section('content')
 <!-- Hero Section -->
-<div class="relative bg-gray-900 overflow-hidden min-h-[90vh] flex items-center">
+<div class="relative bg-gray-900 overflow-hidden min-h-screen flex items-center justify-start">
     <div class="absolute inset-0">
-        <img class="w-full h-full object-cover opacity-90" src="{{ asset('images/gambar-wira-garden.png') }}" alt="Wira Garden Nature">
-        <div class="absolute inset-0 bg-gradient-to-r from-gray-900/90 via-gray-900/40 to-transparent"></div>
-        <div class="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/10 to-transparent"></div>
+        <!-- Main Background Image -->
+        <img class="w-full h-full object-cover" src="{{ asset(setting('hero_image', 'images/gambar-wira-garden.png')) }}" alt="Wira Garden Nature">
+        
+        <!-- Overlays for better text readability -->
+        <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
     </div>
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full mt-10 z-10 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-        <!-- Left Side: Text Content -->
-        <div class="max-w-2xl">
-            <span class="inline-block py-1.5 px-4 rounded-full bg-white/20 text-white font-bold text-sm tracking-widest mb-6 border border-white/30 backdrop-blur-md shadow-sm">🌿 DESTINASI WISATA ALAM</span>
-            <h1 class="text-5xl md:text-7xl font-bold text-white mb-4 leading-tight drop-shadow-lg font-heading">
-                Kembali ke <br/>
-                <span class="text-accent inline-block mt-2 transform -rotate-2 drop-shadow-2xl" style="font-family: 'Caveat', cursive; font-size: 1.1em;">Harmoni Alam</span>
+    
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10 pt-20 pb-10">
+        <!-- Text Content -->
+        <div class="max-w-2xl text-left">
+            <h2 class="text-2xl md:text-3xl font-bold text-white mb-2 drop-shadow-md">
+                {{ setting('hero_subtitle', 'Nikmati Keindahan Alam') }}
+            </h2>
+            
+            <h1 class="text-6xl md:text-8xl font-extrabold text-white mb-6 leading-tight drop-shadow-xl tracking-tight">
+                {{ setting('hero_title', 'Wira Garden') }}
             </h1>
-            <p class="text-xl md:text-2xl text-gray-100 mb-10 leading-relaxed font-light drop-shadow">
-                Lepaskan penat dan rasakan kesejukan alam. Wira Garden menawarkan pengalaman liburan keluarga tak terlupakan dengan aliran sungai alami yang jernih.
+            
+            <p class="text-lg md:text-xl text-gray-200 mb-10 leading-relaxed font-medium drop-shadow-md max-w-xl">
+                {{ setting('hero_description', 'Tempat wisata alam yang asri dan menyenangkan untuk semua.') }}
             </p>
-            <div class="flex flex-col sm:flex-row gap-5">
-                <a href="{{ route('reservations.create') }}" class="bg-accent hover:bg-orange-500 text-white text-center font-bold text-lg px-8 py-4 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1">
+            
+            <div>
+                <a href="{{ route('reservations.create') }}" class="inline-flex justify-center items-center gap-2 bg-primary hover:bg-[#036545] text-white font-bold text-lg px-8 py-4 rounded-xl transition-all duration-300 shadow-lg hover:shadow-2xl hover:-translate-y-1">
                     Reservasi Sekarang
-                </a>
-                <a href="{{ route('destinations.index') }}" class="bg-white/10 backdrop-blur-sm border border-white/50 text-white text-center font-bold text-lg px-8 py-4 rounded-xl transition-all duration-300 hover:bg-white hover:text-primary">
-                    Jelajahi Fasilitas
                 </a>
             </div>
         </div>
+    </div>
+</div>
 
-        <!-- Right Side: Floating Image & CTA -->
-        <div class="hidden lg:flex justify-center items-center relative h-[550px]">
-            <!-- Decorative Glow -->
-            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-accent/20 rounded-full blur-[80px] z-0"></div>
+<!-- Mengapa Wira Garden Section -->
+<div class="py-24 bg-white relative z-20 shadow-[0_-20px_40px_-15px_rgba(0,0,0,0.1)]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-3xl font-bold text-gray-900 mb-12 font-heading tracking-tight text-center md:text-left">Mengapa Wira Garden?</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Feature 1 -->
+            <div class="bg-white rounded-2xl border border-gray-100 p-8 text-center hover:shadow-xl hover:border-primary/20 transition-all duration-300 group">
+                <div class="w-16 h-16 mx-auto mb-6 text-primary flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300">
+                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418"></path></svg>
+                </div>
+                <h3 class="font-bold text-gray-900 mb-3 text-lg">Alam yang Asri</h3>
+                <p class="text-gray-500 text-sm leading-relaxed">Dikelilingi pepohonan hijau dan udara segar.</p>
+            </div>
             
-            <!-- Main Glass Card -->
-            <div class="relative z-20 w-[500px] bg-white/10 backdrop-blur-xl border border-white/20 rounded-[2.5rem] p-4 shadow-2xl transform hover:-translate-y-2 transition-transform duration-500">
-                <!-- Image Container -->
-                <div class="w-full h-[320px] rounded-[2rem] overflow-hidden relative shadow-lg group">
-                    <img src="{{ asset(setting('hero_image', 'images/gambar-keluarga.png')) }}" alt="Keluarga Wisata Alam" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700">
+            <!-- Feature 2 -->
+            <div class="bg-white rounded-2xl border border-gray-100 p-8 text-center hover:shadow-xl hover:border-primary/20 transition-all duration-300 group">
+                <div class="w-16 h-16 mx-auto mb-6 text-primary flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300">
+                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                </div>
+                <h3 class="font-bold text-gray-900 mb-3 text-lg">Fasilitas Lengkap</h3>
+                <p class="text-gray-500 text-sm leading-relaxed">Fasilitas nyaman untuk pengunjung.</p>
+            </div>
+            
+            <!-- Feature 3 -->
+            <div class="bg-white rounded-2xl border border-gray-100 p-8 text-center hover:shadow-xl hover:border-primary/20 transition-all duration-300 group">
+                <div class="w-16 h-16 mx-auto mb-6 text-primary flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300">
+                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+                <h3 class="font-bold text-gray-900 mb-3 text-lg">Aktivitas Menarik</h3>
+                <p class="text-gray-500 text-sm leading-relaxed">Berbagai wahana dan aktivitas seru.</p>
+            </div>
+            
+            <!-- Feature 4 -->
+            <div class="bg-white rounded-2xl border border-gray-100 p-8 text-center hover:shadow-xl hover:border-primary/20 transition-all duration-300 group">
+                <div class="w-16 h-16 mx-auto mb-6 text-primary flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300">
+                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                </div>
+                <h3 class="font-bold text-gray-900 mb-3 text-lg">Harga Terjangkau</h3>
+                <p class="text-gray-500 text-sm leading-relaxed">Harga tiket yang ramah di kantong.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Destinasi Unggulan Section -->
+<div class="py-24 bg-gray-50 relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-end mb-12">
+            <div>
+                <h2 class="text-3xl font-bold text-gray-900 font-heading tracking-tight mb-2">Destinasi Unggulan</h2>
+                <p class="text-gray-500">Spot favorit pengunjung Wira Garden.</p>
+            </div>
+            <a href="{{ route('destinations.index') }}" class="hidden sm:inline-flex items-center gap-2 text-primary font-semibold hover:text-secondary transition-colors group">
+                Lihat Semua
+                <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </a>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            @forelse($destinations as $destination)
+            <div class="bg-white rounded-[2rem] shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 p-3 group flex flex-col">
+                <!-- Image Area -->
+                <div class="h-48 overflow-hidden relative rounded-[1.5rem]">
+                    @if($destination->image_path)
+                    <img src="{{ Storage::url($destination->image_path) }}" alt="{{ $destination->name }}" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
+                    @else
+                    <div class="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400">
+                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2-2v12a2 2 0 002 2z"></path></svg>
+                    </div>
+                    @endif
+                    
+                    <!-- Category Badge -->
+                    @if($destination->category)
+                    <div class="absolute top-3 right-3 bg-white/95 backdrop-blur px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-sm">
+                        @if($destination->category->icon_type == 'image' && $destination->category->icon_value)
+                            <img src="{{ Storage::url($destination->category->icon_value) }}" alt="Icon" class="w-3.5 h-3.5 rounded-sm object-cover">
+                        @elseif($destination->category->icon_type == 'svg' && $destination->category->icon_value)
+                            <div class="text-green-600 flex items-center justify-center">
+                                @if(str_contains($destination->category->icon_value, '<svg'))
+                                    <div class="[&>svg]:w-3.5 [&>svg]:h-3.5">
+                                        {!! $destination->category->icon_value !!}
+                                    </div>
+                                @else
+                                    <i class="{{ $destination->category->icon_value }} text-sm"></i>
+                                @endif
+                            </div>
+                        @else
+                            <svg class="w-3.5 h-3.5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        @endif
+                        <span class="text-[11px] font-bold text-green-700">{{ $destination->category->name }}</span>
+                    </div>
+                    @endif
                 </div>
                 
                 <!-- Content Area -->
-                <div class="p-6 pb-2 text-center">
-                    <h3 class="font-bold text-4xl text-white mb-2 drop-shadow-sm" style="font-family: 'Caveat', cursive;">{{ setting('hero_title', 'Wisata Alam Keluarga') }}</h3>
-                    <p class="text-gray-200 text-base leading-relaxed font-light">{{ setting('hero_subtitle', 'Ciptakan momen tak terlupakan di alam bebas.') }}</p>
-                </div>
-
-                <!-- Floating Badge -->
-                <div class="absolute -top-5 -right-5 bg-white/95 backdrop-blur-sm px-5 py-3 rounded-2xl shadow-xl z-30 flex items-center justify-center transform rotate-6 animate-[pulse_4s_ease-in-out_infinite]">
-                    <div class="text-charcoal font-bold text-center flex items-center gap-2">
-                        <span class="text-2xl">🌿</span>
-                        <span class="text-sm tracking-wide">Alam Bebas</span>
+                <div class="pt-5 pb-2 px-2 flex flex-col flex-grow">
+                    <!-- Title and Desc -->
+                    <div class="flex gap-4 mb-4">
+                        <div class="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center shrink-0 border border-green-100 overflow-hidden">
+                            @if($destination->category && $destination->category->icon_type == 'image' && $destination->category->icon_value)
+                                <img src="{{ Storage::url($destination->category->icon_value) }}" alt="Icon" class="w-full h-full object-cover">
+                            @elseif($destination->category && $destination->category->icon_type == 'svg' && $destination->category->icon_value)
+                                <div class="text-green-600 flex items-center justify-center h-full">
+                                    @if(str_contains($destination->category->icon_value, '<svg'))
+                                        <div class="[&>svg]:w-5 [&>svg]:h-5">
+                                            {!! $destination->category->icon_value !!}
+                                        </div>
+                                    @else
+                                        <i class="{{ $destination->category->icon_value }} text-xl"></i>
+                                    @endif
+                                </div>
+                            @else
+                                <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"></path></svg>
+                            @endif
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-bold text-charcoal mb-1 leading-tight group-hover:text-primary transition-colors">{{ $destination->name }}</h2>
+                            <p class="text-gray-500 text-[13px] line-clamp-2 leading-relaxed">{{ $destination->description }}</p>
+                        </div>
                     </div>
+                    
+                    <hr class="border-dashed border-gray-200 mb-4 mt-auto">
+                    
+                    <!-- Prices -->
+                    <div class="flex gap-3 mb-4">
+                        <div class="flex-1 border border-gray-100 rounded-[1rem] p-3 flex items-center gap-3 bg-gray-50/50">
+                            <div class="w-8 h-8 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center shrink-0">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                            </div>
+                            <div>
+                                <div class="text-[10px] text-gray-500 font-medium">Dewasa</div>
+                                <div class="text-sm font-bold text-[#0071ba]">Rp {{ number_format($destination->price_adult, 0, ',', '.') }}</div>
+                            </div>
+                        </div>
+                        <div class="flex-1 border border-gray-100 rounded-[1rem] p-3 flex items-center gap-3 bg-gray-50/50">
+                            <div class="w-8 h-8 rounded-full bg-green-50 text-green-600 flex items-center justify-center shrink-0">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                            </div>
+                            <div>
+                                <div class="text-[10px] text-gray-500 font-medium">Anak-anak</div>
+                                <div class="text-sm font-bold text-[#0071ba]">Rp {{ number_format($destination->price_child, 0, ',', '.') }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <a href="{{ route('destinations.show', $destination->id) }}" class="w-full flex items-center justify-center gap-2 bg-[#0071ba] text-white py-3 rounded-[1rem] font-bold hover:bg-[#005a96] transition-colors text-sm">
+                        Lihat Detail
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                    </a>
                 </div>
-            </div>
-        </div>
-    </div>
-    <!-- Wave Transition -->
-    <div class="absolute bottom-0 left-0 w-full overflow-hidden leading-none z-10" style="transform: translateY(1px);">
-        <svg class="relative block w-full h-[30px] sm:h-[50px] lg:h-[70px]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
-            <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V120H0V95.8C59.71,118.08,130.83,112.56,189.92,98.33,232.4,88.16,275.67,73.1,321.39,56.44Z" fill="#f9fafb"></path>
-        </svg>
-    </div>
-</div>
-
-<!-- Highlight Section -->
-<div class="py-24 bg-background relative">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center max-w-3xl mx-auto mb-16">
-            <h2 class="text-accent font-semibold tracking-widest uppercase mb-3">Pilihan Tiket</h2>
-            <h3 class="text-4xl font-bold text-primary font-heading">Akses Tak Terbatas ke Alam</h3>
-            <div class="w-24 h-1.5 bg-accent mx-auto mt-6 rounded-full"></div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            @forelse($ticketTypes as $ticket)
-            <div class="glass-card p-8 group hover:-translate-y-3 transition-all duration-300 relative overflow-hidden bg-white border border-gray-100">
-                <div class="absolute top-0 right-0 w-32 h-32 bg-secondary/5 rounded-bl-[100px] -z-10 group-hover:scale-110 transition-transform duration-500"></div>
-                
-                <div class="w-16 h-16 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mb-8 group-hover:bg-primary group-hover:text-white transition-colors duration-300 shadow-inner">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"></path></svg>
-                </div>
-                
-                <h4 class="text-2xl font-bold text-primary mb-3 font-heading">{{ $ticket->name }}</h4>
-                <p class="text-gray-500 mb-8 min-h-[3rem] leading-relaxed">{{ $ticket->description }}</p>
-                
-                <div class="flex items-end gap-2 mb-8 border-t border-gray-100 pt-6">
-                    <span class="text-4xl font-extrabold text-primary">Rp {{ number_format($ticket->price, 0, ',', '.') }}</span>
-                    <span class="text-gray-400 mb-1 font-medium">/ org</span>
-                </div>
-                
-                <a href="{{ route('reservations.create') }}" class="block w-full text-center py-3 px-4 rounded-xl font-medium text-primary bg-primary/10 hover:bg-primary hover:text-white transition-colors duration-300">Pilih Tiket</a>
             </div>
             @empty
-            <div class="col-span-3 text-center py-16 text-gray-500 bg-white rounded-3xl border border-dashed border-gray-300">
-                Belum ada tiket yang tersedia.
+            <div class="col-span-3 text-center text-gray-400 py-12 bg-white rounded-2xl border border-dashed border-gray-200">
+                Belum ada data destinasi.
             </div>
             @endforelse
         </div>
+        
+        <div class="mt-8 text-center sm:hidden">
+            <a href="{{ route('destinations.index') }}" class="inline-flex items-center gap-2 text-primary font-semibold hover:text-secondary transition-colors">
+                Lihat Semua Destinasi
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </a>
+        </div>
     </div>
 </div>
+
 @endsection

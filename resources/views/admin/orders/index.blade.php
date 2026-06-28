@@ -78,6 +78,12 @@
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="font-bold text-primary">{{ $order->order_code }}</div>
                             <div class="text-sm font-semibold text-gray-600 mt-1">{{ \Carbon\Carbon::parse($order->visit_date)->format('d M Y') }}</div>
+                            @if($order->destination)
+                            <div class="text-xs text-secondary mt-1 flex items-center gap-1">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
+                                {{ $order->destination->name }}
+                            </div>
+                            @endif
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="font-bold text-gray-900">{{ $order->visitor_name }}</div>

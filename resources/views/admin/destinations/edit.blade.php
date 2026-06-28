@@ -12,7 +12,7 @@
 
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden max-w-3xl mx-auto">
         <div class="p-6 sm:p-8">
-            <form action="{{ route('admin.destinations.update', $destination) }}" method="POST" class="space-y-6">
+            <form action="{{ route('admin.destinations.update', $destination) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                 @csrf
                 @method('PUT')
                 
@@ -20,6 +20,104 @@
                     <label for="name" class="block text-sm font-semibold text-charcoal mb-2">Nama Destinasi</label>
                     <input type="text" name="name" id="name" required class="block w-full border-gray-200 rounded-xl shadow-sm focus:ring-secondary focus:border-secondary transition-colors py-3 px-4 bg-gray-50 focus:bg-white" value="{{ old('name', $destination->name) }}">
                     @error('name') <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span> @enderror
+                </div>
+
+                <div>
+                    <label for="image" class="block text-sm font-semibold text-charcoal mb-2">Foto Sampul (Utama)</label>
+                    @if($destination->image_path)
+                    <div class="mb-4">
+                        <img src="{{ Storage::url($destination->image_path) }}" alt="{{ $destination->name }}" class="h-32 rounded-xl object-cover shadow-sm">
+                    </div>
+                    @endif
+                    <input type="file" name="image" id="image" accept="image/*" class="block w-full border-gray-200 rounded-xl shadow-sm focus:ring-secondary focus:border-secondary transition-colors py-2 px-4 bg-gray-50 focus:bg-white text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer">
+                    <p class="text-xs text-gray-500 mt-2">Biarkan kosong jika tidak ingin mengubah foto sampul.</p>
+                    @error('image') <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span> @enderror
+                </div>
+
+                <div x-data="galleryUploader()">
+                    <label class="block text-sm font-semibold text-charcoal mb-2">Foto Galeri (Bisa tambah lebih dari satu)</label>
+                    
+                    @if(is_array($destination->gallery_images) && count($destination->gallery_images) > 0)
+                    <div class="mb-4">
+                        <p class="text-xs text-gray-500 mb-2">Galeri Lama:</p>
+                        <div class="flex flex-wrap gap-4">
+                            @foreach($destination->gallery_images as $path)
+                                <img src="{{ Storage::url($path) }}" class="h-24 w-24 rounded-xl object-cover shadow-sm border border-gray-200">
+                            @endforeach
+                        </div>
+                        <label class="inline-flex items-center mt-3 bg-red-50 p-2 rounded-lg border border-red-100 cursor-pointer">
+                            <input type="checkbox" name="clear_gallery" value="1" class="rounded border-gray-300 text-red-600 shadow-sm focus:ring-red-500">
+                            <span class="ml-2 text-sm text-red-600 font-medium">Hapus semua foto galeri lama di atas</span>
+                        </label>
+                    </div>
+                    @endif
+
+                    <p class="text-xs text-gray-500 mb-2">Tambah Foto Baru:</p>
+                    <div class="flex flex-wrap gap-4 mb-2">
+                        <template x-for="(imageUrl, index) in imageUrls" :key="index">
+                            <div class="relative h-24 w-24 rounded-xl overflow-hidden shadow-sm border border-gray-200 group">
+                                <img :src="imageUrl" class="w-full h-full object-cover">
+                                <button type="button" @click="removeImage(index)" class="absolute top-1 right-1 bg-red-500/80 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600">
+                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                </button>
+                            </div>
+                        </template>
+
+                        <label class="h-24 w-24 rounded-xl border-2 border-dashed border-gray-300 hover:border-primary hover:bg-primary/5 flex flex-col items-center justify-center cursor-pointer transition-colors text-gray-500 hover:text-primary">
+                            <svg class="w-8 h-8 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                            <span class="text-xs font-semibold">Tambah</span>
+                            <input type="file" multiple accept="image/*" class="hidden" @change="addImages">
+                        </label>
+                    </div>
+                    
+                    <input type="file" name="gallery[]" id="hidden_gallery_input" multiple class="hidden">
+                    <p class="text-xs text-gray-500 mt-2">Pilih gambar untuk ditambahkan ke galeri destinasi.</p>
+                    @error('gallery.*') <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span> @enderror
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="category_id" class="block text-sm font-semibold text-charcoal mb-2">Kategori Destinasi</label>
+                        <select id="category_id" name="category_id" required
+                            class="block w-full border-gray-200 rounded-xl shadow-sm focus:ring-secondary focus:border-secondary transition-colors py-3 px-4 bg-gray-50 focus:bg-white">
+                            <option value="" disabled>Pilih Kategori</option>
+                            @foreach($categories as $category)
+                                <option value="{{ $category->id }}" {{ old('category_id', $destination->category_id) == $category->id ? 'selected' : '' }}>
+                                    {{ $category->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('category_id') <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span> @enderror
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="price_adult" class="block text-sm font-semibold text-charcoal mb-2">Harga Dewasa (Rp)</label>
+                        <input type="number" name="price_adult" id="price_adult" required class="block w-full border-gray-200 rounded-xl shadow-sm focus:ring-secondary focus:border-secondary transition-colors py-3 px-4 bg-gray-50 focus:bg-white" value="{{ old('price_adult', round($destination->price_adult)) }}">
+                        @error('price_adult') <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span> @enderror
+                    </div>
+                    <div>
+                        <label for="price_child" class="block text-sm font-semibold text-charcoal mb-2">Harga Anak-anak (Rp)</label>
+                        <input type="number" name="price_child" id="price_child" required class="block w-full border-gray-200 rounded-xl shadow-sm focus:ring-secondary focus:border-secondary transition-colors py-3 px-4 bg-gray-50 focus:bg-white" value="{{ old('price_child', round($destination->price_child)) }}">
+                        @error('price_child') <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span> @enderror
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-charcoal mb-2">Fasilitas <span class="text-gray-400 font-normal">(Pilih fasilitas yang tersedia)</span></label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                        @php
+                            $selectedFacilities = old('facilities', is_array($destination->facilities) ? $destination->facilities : []);
+                        @endphp
+                        @foreach($facilities as $facility)
+                        <label class="inline-flex items-center p-3 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 transition-colors">
+                            <input type="checkbox" name="facilities[]" value="{{ $facility->id }}" class="rounded border-gray-300 text-primary shadow-sm focus:ring-primary h-5 w-5" {{ in_array($facility->id, $selectedFacilities) ? 'checked' : '' }}>
+                            <span class="ml-3 text-sm text-gray-700 font-medium">{{ $facility->name }}</span>
+                        </label>
+                        @endforeach
+                    </div>
+                    @error('facilities') <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span> @enderror
                 </div>
 
                 <div>
@@ -35,8 +133,22 @@
                 </div>
 
                 <div>
-                    <label for="open_hours" class="block text-sm font-semibold text-charcoal mb-2">Jam Buka</label>
-                    <input type="text" name="open_hours" id="open_hours" required class="block w-full border-gray-200 rounded-xl shadow-sm focus:ring-secondary focus:border-secondary transition-colors py-3 px-4 bg-gray-50 focus:bg-white" value="{{ old('open_hours', $destination->open_hours) }}">
+                    <label class="block text-sm font-semibold text-charcoal mb-2">Jam Operasional</label>
+                    <input type="hidden" name="open_hours" id="open_hours" value="{{ old('open_hours', $destination->open_hours) }}">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            </div>
+                            <input type="time" id="open_time" class="block w-full pl-10 border-gray-200 rounded-xl shadow-sm focus:ring-secondary focus:border-secondary transition-colors py-3 bg-gray-50 focus:bg-white cursor-pointer">
+                        </div>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            </div>
+                            <input type="time" id="close_time" class="block w-full pl-10 border-gray-200 rounded-xl shadow-sm focus:ring-secondary focus:border-secondary transition-colors py-3 bg-gray-50 focus:bg-white cursor-pointer">
+                        </div>
+                    </div>
                     @error('open_hours') <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span> @enderror
                 </div>
 
@@ -53,4 +165,57 @@
             </form>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('galleryUploader', () => ({
+                imageUrls: [],
+                files: [],
+                addImages(event) {
+                    const newFiles = Array.from(event.target.files);
+                    newFiles.forEach(file => {
+                        this.files.push(file);
+                        this.imageUrls.push(URL.createObjectURL(file));
+                    });
+                    this.updateFileInput();
+                    event.target.value = '';
+                },
+                removeImage(index) {
+                    this.files.splice(index, 1);
+                    URL.revokeObjectURL(this.imageUrls[index]);
+                    this.imageUrls.splice(index, 1);
+                    this.updateFileInput();
+                },
+                updateFileInput() {
+                    const dataTransfer = new DataTransfer();
+                    this.files.forEach(file => {
+                        dataTransfer.items.add(file);
+                    });
+                    document.getElementById('hidden_gallery_input').files = dataTransfer.files;
+                }
+            }));
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const openTime = document.getElementById('open_time');
+            const closeTime = document.getElementById('close_time');
+            const openHours = document.getElementById('open_hours');
+
+            if (openHours.value && openHours.value.includes(' - ')) {
+                const parts = openHours.value.split(' - ');
+                openTime.value = parts[0].trim();
+                closeTime.value = parts[1].trim();
+            } else {
+                openTime.value = '08:00';
+                closeTime.value = '17:00';
+            }
+
+            function updateOpenHours() {
+                openHours.value = `${openTime.value} - ${closeTime.value}`;
+            }
+
+            openTime.addEventListener('change', updateOpenHours);
+            closeTime.addEventListener('change', updateOpenHours);
+        });
+    </script>
 </x-app-layout>

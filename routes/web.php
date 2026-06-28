@@ -11,13 +11,16 @@ use App\Http\Controllers\MidtransWebhookController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/destinasi', [DestinationController::class, 'index'])->name('destinations.index');
+Route::get('/destinasi/{id}', [DestinationController::class, 'show'])->name('destinations.show');
+Route::get('/fasilitas', [App\Http\Controllers\FacilityController::class, 'index'])->name('facilities.index');
+Route::get('/tiket', [App\Http\Controllers\TicketController::class, 'index'])->name('tickets.index');
 Route::get('/galeri', [GalleryController::class, 'index'])->name('galleries.index');
+Route::get('/tentang-kami', [HomeController::class, 'about'])->name('about');
 
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\DestinationController as AdminDestinationController;
 use App\Http\Controllers\Admin\GalleryController as AdminGalleryController;
-use App\Http\Controllers\Admin\TicketTypeController;
 use App\Http\Controllers\Admin\VisitQuotaController;
 
 Route::get('/reservasi', [ReservationController::class, 'create'])->name('reservations.create');
@@ -38,10 +41,16 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
     Route::post('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
     Route::resource('destinations', AdminDestinationController::class);
     Route::resource('galleries', AdminGalleryController::class);
-    Route::resource('tickets', TicketTypeController::class);
     Route::resource('quotas', VisitQuotaController::class);
+    Route::resource('facilities', App\Http\Controllers\Admin\FacilityController::class);
+    Route::resource('categories', App\Http\Controllers\Admin\CategoryController::class);
     Route::get('/settings', [App\Http\Controllers\Admin\SettingController::class, 'index'])->name('settings.index');
     Route::post('/settings', [App\Http\Controllers\Admin\SettingController::class, 'store'])->name('settings.store');
+    
+    // Reports
+    Route::get('/reports', [App\Http\Controllers\Admin\ReportController::class, 'index'])->name('reports.index');
+    Route::get('/reports/export-excel', [App\Http\Controllers\Admin\ReportController::class, 'exportExcel'])->name('reports.exportExcel');
+    Route::get('/reports/export-pdf', [App\Http\Controllers\Admin\ReportController::class, 'exportPdf'])->name('reports.exportPdf');
 });
 
 Route::middleware('auth')->group(function () {

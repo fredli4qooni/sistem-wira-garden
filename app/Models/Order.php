@@ -6,7 +6,22 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
-    protected $guarded = ['id'];
+    protected $fillable = [
+        'destination_id',
+        'order_code',
+        'visitor_name',
+        'phone',
+        'email',
+        'visit_date',
+        'total_amount',
+        'status',
+        'snap_token',
+    ];
+
+    public function destination()
+    {
+        return $this->belongsTo(Destination::class);
+    }
     
     public function items()
     {

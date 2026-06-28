@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\TicketType;
+use App\Models\Destination;
 use App\Models\VisitQuota;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
@@ -23,24 +24,45 @@ class ReservationController extends Controller
         Config::$is3ds = config('midtrans.is_3ds');
     }
 
-    public function create()
+    public function create(Request $request)
     {
-        $ticketTypes = TicketType::where('is_active', true)->get();
-        return view('reservations.create', compact('ticketTypes'));
+        $destinations = Destination::all()->map(function($dest) {
+            $dest->image_url = \Illuminate\Support\Facades\Storage::url($dest->image_path ?? 'default.jpg');
+            return $dest;
+        });
+        
+        if ($destinations->isEmpty()) {
+            return redirect()->route('destinations.index')->with('error', 'Belum ada destinasi yang tersedia untuk direservasi.');
+        }
+
+        $selectedDestinationId = $request->query('destination_id');
+        $selectedDestination = null;
+
+        if ($selectedDestinationId) {
+            $selectedDestination = $destinations->firstWhere('id', $selectedDestinationId);
+        }
+
+        // If no valid destination_id passed, default to the first one
+        if (!$selectedDestination) {
+            $selectedDestination = $destinations->first();
+        }
+        
+        return view('reservations.create', compact('destinations', 'selectedDestination'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
+            'destination_id' => 'required|exists:destinations,id',
             'visitor_name' => 'required|string|max:255',
             'phone' => 'required|string|max:20',
-            'email' => 'required|email|max:255',
+            'email' => 'nullable|email|max:255',
             'visit_date' => 'required|date|after_or_equal:today',
-            'tickets' => 'required|array',
-            'tickets.*' => 'integer|min:0',
+            'tickets_adult' => 'required|integer|min:0',
+            'tickets_child' => 'required|integer|min:0',
         ]);
 
-        $totalTickets = array_sum($request->tickets);
+        $totalTickets = $request->tickets_adult + $request->tickets_child;
         if ($totalTickets <= 0) {
             return back()->withInput()->withErrors(['tickets' => 'Silakan pilih minimal 1 tiket.']);
         }
@@ -61,32 +83,43 @@ class ReservationController extends Controller
                 $quota->increment('used_quota', $totalTickets);
             }
 
+            $destination = Destination::findOrFail($request->destination_id);
+            $totalAmount = ($destination->price_adult * $request->tickets_adult) + ($destination->price_child * $request->tickets_child);
+
             $orderCode = 'WG-' . date('Ymd') . '-' . strtoupper(Str::random(5));
             $order = Order::create([
                 'order_code' => $orderCode,
+                'destination_id' => $destination->id,
                 'visitor_name' => $request->visitor_name,
                 'phone' => $request->phone,
-                'email' => $request->email,
+                'email' => $request->email ?? '',
                 'visit_date' => $request->visit_date,
-                'total_amount' => 0, // will calculate below
+                'total_amount' => $totalAmount,
                 'status' => 'PENDING',
             ]);
 
-            $totalAmount = 0;
-            foreach ($request->tickets as $ticketId => $qty) {
-                if ($qty > 0) {
-                    $ticket = TicketType::find($ticketId);
-                    $subtotal = $ticket->price * $qty;
-                    $totalAmount += $subtotal;
-
-                    OrderItem::create([
-                        'order_id' => $order->id,
-                        'ticket_type_id' => $ticket->id,
-                        'quantity' => $qty,
-                        'unit_price' => $ticket->price,
-                        'subtotal' => $subtotal,
-                    ]);
-                }
+            // Save details as order items (Adult)
+            if ($request->tickets_adult > 0) {
+                OrderItem::create([
+                    'order_id' => $order->id,
+                    'ticket_type_id' => null, // null since we use destination
+                    'ticket_name' => 'Dewasa', // assuming we add a ticket_name later or use existing logic
+                    'quantity' => $request->tickets_adult,
+                    'unit_price' => $destination->price_adult,
+                    'subtotal' => $destination->price_adult * $request->tickets_adult,
+                ]);
+            }
+            
+            // Save details as order items (Child)
+            if ($request->tickets_child > 0) {
+                OrderItem::create([
+                    'order_id' => $order->id,
+                    'ticket_type_id' => null,
+                    'ticket_name' => 'Anak-anak',
+                    'quantity' => $request->tickets_child,
+                    'unit_price' => $destination->price_child,
+                    'subtotal' => $destination->price_child * $request->tickets_child,
+                ]);
             }
 
             $order->update(['total_amount' => $totalAmount]);

@@ -8,7 +8,12 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $ticketTypes = \App\Models\TicketType::where('is_active', true)->get();
-        return view('welcome', compact('ticketTypes'));
+        $destinations = \App\Models\Destination::limit(3)->get();
+        return view('welcome', compact('destinations'));
+    }
+
+    public function about()
+    {
+        return view('about');
     }
 }
