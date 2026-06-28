@@ -12,6 +12,13 @@ class SettingController extends Controller
     public function index()
     {
         $settings = Setting::all();
+        
+        // Auto-seed default settings if empty
+        if ($settings->isEmpty()) {
+            \Illuminate\Support\Facades\Artisan::call('db:seed', ['--class' => 'SettingSeeder', '--force' => true]);
+            $settings = Setting::all();
+        }
+
         return view('admin.settings.index', compact('settings'));
     }
 
