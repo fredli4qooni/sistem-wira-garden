@@ -29,6 +29,7 @@ class DestinationController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
+            'pricing_type' => 'required|in:per_person,per_package',
             'price_adult' => 'required|numeric|min:0',
             'price_child' => 'required|numeric|min:0',
             'category_id' => 'required|exists:categories,id',
@@ -73,6 +74,7 @@ class DestinationController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
+            'pricing_type' => 'required|in:per_person,per_package',
             'price_adult' => 'required|numeric|min:0',
             'price_child' => 'required|numeric|min:0',
             'category_id' => 'required|exists:categories,id',

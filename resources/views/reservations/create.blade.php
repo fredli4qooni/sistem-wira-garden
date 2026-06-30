@@ -51,14 +51,24 @@
                             <div>
                                 <h4 class="font-bold text-gray-900 text-lg mb-2" x-text="currentDestination.name"></h4>
                                 <div class="flex flex-col gap-2 text-sm bg-green-50/50 p-4 rounded-xl border border-green-100">
-                                    <div class="flex justify-between items-center">
-                                        <span class="text-gray-600 font-medium">Tiket Dewasa</span> 
-                                        <span class="text-primary font-bold text-base" x-text="'Rp ' + formatRupiah(currentDestination.price_adult)"></span>
-                                    </div>
-                                    <div class="flex justify-between items-center">
-                                        <span class="text-gray-600 font-medium">Tiket Anak</span> 
-                                        <span class="text-primary font-bold text-base" x-text="'Rp ' + formatRupiah(currentDestination.price_child)"></span>
-                                    </div>
+                                    <template x-if="currentDestination.pricing_type === 'per_package'">
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-gray-600 font-medium">Harga Paket / Tenda</span> 
+                                            <span class="text-primary font-bold text-base" x-text="'Rp ' + formatRupiah(currentDestination.price_adult)"></span>
+                                        </div>
+                                    </template>
+                                    <template x-if="currentDestination.pricing_type === 'per_person'">
+                                        <div class="flex flex-col gap-2 w-full">
+                                            <div class="flex justify-between items-center w-full">
+                                                <span class="text-gray-600 font-medium">Tiket Dewasa</span> 
+                                                <span class="text-primary font-bold text-base" x-text="'Rp ' + formatRupiah(currentDestination.price_adult)"></span>
+                                            </div>
+                                            <div class="flex justify-between items-center w-full">
+                                                <span class="text-gray-600 font-medium">Tiket Anak</span> 
+                                                <span class="text-primary font-bold text-base" x-text="'Rp ' + formatRupiah(currentDestination.price_child)"></span>
+                                            </div>
+                                        </div>
+                                    </template>
                                 </div>
                             </div>
                         </div>
@@ -79,27 +89,43 @@
                             </div>
 
                             <!-- Jumlah Tiket -->
-                            <div>
-                                <label class="block text-sm font-semibold text-charcoal mb-4">Jumlah Tiket</label>
+                            <div x-show="currentDestination">
+                                <label class="block text-sm font-semibold text-charcoal mb-4" x-text="currentDestination.pricing_type === 'per_package' ? 'Jumlah Paket / Tenda' : 'Jumlah Tiket'">Jumlah Tiket</label>
                                 
                                 <div class="space-y-4">
-                                    <div class="flex items-center justify-between">
-                                        <span class="text-gray-700">Dewasa</span>
-                                        <div class="flex items-center border border-gray-200 rounded-lg">
-                                            <button type="button" class="px-3 py-1 text-gray-500 hover:bg-gray-100 rounded-l-lg" @click="if(ticketsAdult > 0) ticketsAdult--">-</button>
-                                            <input type="number" name="tickets_adult" id="tickets_adult" x-model.number="ticketsAdult" min="0" class="w-12 text-center border-none focus:ring-0 p-0 text-gray-700 py-1" readonly>
-                                            <button type="button" class="px-3 py-1 text-gray-500 hover:bg-gray-100 rounded-r-lg" @click="ticketsAdult++">+</button>
+                                    <template x-if="currentDestination.pricing_type === 'per_package'">
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-gray-700">Jumlah</span>
+                                            <div class="flex items-center border border-gray-200 rounded-lg">
+                                                <button type="button" class="px-3 py-1 text-gray-500 hover:bg-gray-100 rounded-l-lg" @click="if(ticketsAdult > 0) ticketsAdult--">-</button>
+                                                <input type="number" name="tickets_adult" id="tickets_adult_pkg" x-model.number="ticketsAdult" min="0" class="w-12 text-center border-none focus:ring-0 p-0 text-gray-700 py-1" readonly>
+                                                <button type="button" class="px-3 py-1 text-gray-500 hover:bg-gray-100 rounded-r-lg" @click="ticketsAdult++">+</button>
+                                            </div>
+                                            <input type="hidden" name="tickets_child" value="0">
                                         </div>
-                                    </div>
+                                    </template>
                                     
-                                    <div class="flex items-center justify-between">
-                                        <span class="text-gray-700">Anak-anak</span>
-                                        <div class="flex items-center border border-gray-200 rounded-lg">
-                                            <button type="button" class="px-3 py-1 text-gray-500 hover:bg-gray-100 rounded-l-lg" @click="if(ticketsChild > 0) ticketsChild--">-</button>
-                                            <input type="number" name="tickets_child" id="tickets_child" x-model.number="ticketsChild" min="0" class="w-12 text-center border-none focus:ring-0 p-0 text-gray-700 py-1" readonly>
-                                            <button type="button" class="px-3 py-1 text-gray-500 hover:bg-gray-100 rounded-r-lg" @click="ticketsChild++">+</button>
+                                    <template x-if="currentDestination.pricing_type === 'per_person'">
+                                        <div class="space-y-4 w-full">
+                                            <div class="flex items-center justify-between w-full">
+                                                <span class="text-gray-700">Dewasa</span>
+                                                <div class="flex items-center border border-gray-200 rounded-lg">
+                                                    <button type="button" class="px-3 py-1 text-gray-500 hover:bg-gray-100 rounded-l-lg" @click="if(ticketsAdult > 0) ticketsAdult--">-</button>
+                                                    <input type="number" name="tickets_adult" id="tickets_adult" x-model.number="ticketsAdult" min="0" class="w-12 text-center border-none focus:ring-0 p-0 text-gray-700 py-1" readonly>
+                                                    <button type="button" class="px-3 py-1 text-gray-500 hover:bg-gray-100 rounded-r-lg" @click="ticketsAdult++">+</button>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="flex items-center justify-between w-full">
+                                                <span class="text-gray-700">Anak-anak</span>
+                                                <div class="flex items-center border border-gray-200 rounded-lg">
+                                                    <button type="button" class="px-3 py-1 text-gray-500 hover:bg-gray-100 rounded-l-lg" @click="if(ticketsChild > 0) ticketsChild--">-</button>
+                                                    <input type="number" name="tickets_child" id="tickets_child" x-model.number="ticketsChild" min="0" class="w-12 text-center border-none focus:ring-0 p-0 text-gray-700 py-1" readonly>
+                                                    <button type="button" class="px-3 py-1 text-gray-500 hover:bg-gray-100 rounded-r-lg" @click="ticketsChild++">+</button>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
+                                    </template>
                                 </div>
                             </div>
                         </div>
@@ -177,6 +203,11 @@
             
             get totalPrice() {
                 if(!this.currentDestination) return 0;
+                
+                if (this.currentDestination.pricing_type === 'per_package') {
+                    return this.ticketsAdult * this.currentDestination.price_adult;
+                }
+                
                 return (this.ticketsAdult * this.currentDestination.price_adult) + 
                        (this.ticketsChild * this.currentDestination.price_child);
             },

@@ -83,24 +83,36 @@
                     
                     <!-- Prices -->
                     <div class="bg-gray-50/80 rounded-xl border border-gray-100 p-3 mb-4 space-y-2.5">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-2 text-gray-500">
-                                <div class="w-6 h-6 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                        @if($destination->pricing_type === 'per_package')
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2 text-gray-500">
+                                    <div class="w-6 h-6 rounded-full bg-orange-50 text-orange-500 flex items-center justify-center">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                                    </div>
+                                    <span class="text-[11px] font-medium uppercase tracking-wider">Harga Paket</span>
                                 </div>
-                                <span class="text-[11px] font-medium uppercase tracking-wider">Dewasa</span>
+                                <span class="text-sm font-bold text-[#0071ba]">Rp {{ number_format($destination->price_adult, 0, ',', '.') }}</span>
                             </div>
-                            <span class="text-sm font-bold text-[#0071ba]">Rp {{ number_format($destination->price_adult, 0, ',', '.') }}</span>
-                        </div>
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-2 text-gray-500">
-                                <div class="w-6 h-6 rounded-full bg-green-50 text-green-600 flex items-center justify-center">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                        @else
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2 text-gray-500">
+                                    <div class="w-6 h-6 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                                    </div>
+                                    <span class="text-[11px] font-medium uppercase tracking-wider">Dewasa</span>
                                 </div>
-                                <span class="text-[11px] font-medium uppercase tracking-wider">Anak-anak</span>
+                                <span class="text-sm font-bold text-[#0071ba]">Rp {{ number_format($destination->price_adult, 0, ',', '.') }}</span>
                             </div>
-                            <span class="text-sm font-bold text-green-600">Rp {{ number_format($destination->price_child, 0, ',', '.') }}</span>
-                        </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2 text-gray-500">
+                                    <div class="w-6 h-6 rounded-full bg-green-50 text-green-600 flex items-center justify-center">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                                    </div>
+                                    <span class="text-[11px] font-medium uppercase tracking-wider">Anak-anak</span>
+                                </div>
+                                <span class="text-sm font-bold text-green-600">Rp {{ number_format($destination->price_child, 0, ',', '.') }}</span>
+                            </div>
+                        @endif
                     </div>
                     
                     <a href="{{ route('destinations.show', $destination->id) }}" class="w-full flex items-center justify-center gap-2 bg-[#0071ba] text-white py-3 rounded-[1rem] font-bold hover:bg-[#005a96] transition-colors text-sm">

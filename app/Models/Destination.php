@@ -9,6 +9,7 @@ class Destination extends Model
     protected $fillable = [
         'name',
         'description',
+        'pricing_type',
         'price_adult',
         'price_child',
         'address',

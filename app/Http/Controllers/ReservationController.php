@@ -84,7 +84,12 @@ class ReservationController extends Controller
             }
 
             $destination = Destination::findOrFail($request->destination_id);
-            $totalAmount = ($destination->price_adult * $request->tickets_adult) + ($destination->price_child * $request->tickets_child);
+            
+            if ($destination->pricing_type === 'per_package') {
+                $totalAmount = $destination->price_adult * $request->tickets_adult;
+            } else {
+                $totalAmount = ($destination->price_adult * $request->tickets_adult) + ($destination->price_child * $request->tickets_child);
+            }
 
             $orderCode = 'WG-' . date('Ymd') . '-' . strtoupper(Str::random(5));
             $order = Order::create([
@@ -98,28 +103,41 @@ class ReservationController extends Controller
                 'status' => 'PENDING',
             ]);
 
-            // Save details as order items (Adult)
-            if ($request->tickets_adult > 0) {
-                OrderItem::create([
-                    'order_id' => $order->id,
-                    'ticket_type_id' => null, // null since we use destination
-                    'ticket_name' => 'Dewasa', // assuming we add a ticket_name later or use existing logic
-                    'quantity' => $request->tickets_adult,
-                    'unit_price' => $destination->price_adult,
-                    'subtotal' => $destination->price_adult * $request->tickets_adult,
-                ]);
-            }
-            
-            // Save details as order items (Child)
-            if ($request->tickets_child > 0) {
-                OrderItem::create([
-                    'order_id' => $order->id,
-                    'ticket_type_id' => null,
-                    'ticket_name' => 'Anak-anak',
-                    'quantity' => $request->tickets_child,
-                    'unit_price' => $destination->price_child,
-                    'subtotal' => $destination->price_child * $request->tickets_child,
-                ]);
+            if ($destination->pricing_type === 'per_package') {
+                if ($request->tickets_adult > 0) {
+                    OrderItem::create([
+                        'order_id' => $order->id,
+                        'ticket_type_id' => null,
+                        'ticket_name' => 'Paket / Tenda',
+                        'quantity' => $request->tickets_adult,
+                        'unit_price' => $destination->price_adult,
+                        'subtotal' => $destination->price_adult * $request->tickets_adult,
+                    ]);
+                }
+            } else {
+                // Save details as order items (Adult)
+                if ($request->tickets_adult > 0) {
+                    OrderItem::create([
+                        'order_id' => $order->id,
+                        'ticket_type_id' => null, 
+                        'ticket_name' => 'Dewasa', 
+                        'quantity' => $request->tickets_adult,
+                        'unit_price' => $destination->price_adult,
+                        'subtotal' => $destination->price_adult * $request->tickets_adult,
+                    ]);
+                }
+                
+                // Save details as order items (Child)
+                if ($request->tickets_child > 0) {
+                    OrderItem::create([
+                        'order_id' => $order->id,
+                        'ticket_type_id' => null,
+                        'ticket_name' => 'Anak-anak',
+                        'quantity' => $request->tickets_child,
+                        'unit_price' => $destination->price_child,
+                        'subtotal' => $destination->price_child * $request->tickets_child,
+                    ]);
+                }
             }
 
             $order->update(['total_amount' => $totalAmount]);

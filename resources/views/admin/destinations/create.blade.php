@@ -69,16 +69,28 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label for="price_adult" class="block text-sm font-semibold text-charcoal mb-2">Harga Dewasa (Rp)</label>
-                        <input type="number" name="price_adult" id="price_adult" required min="0" class="block w-full border-gray-200 rounded-xl shadow-sm focus:ring-secondary focus:border-secondary transition-colors py-3 px-4 bg-gray-50 focus:bg-white" value="{{ old('price_adult', 0) }}">
-                        @error('price_adult') <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span> @enderror
+                <div x-data="{ pricingType: '{{ old('pricing_type', 'per_person') }}' }">
+                    <div class="mb-6">
+                        <label for="pricing_type" class="block text-sm font-semibold text-charcoal mb-2">Tipe Harga</label>
+                        <select id="pricing_type" name="pricing_type" x-model="pricingType" required
+                            class="block w-full border-gray-200 rounded-xl shadow-sm focus:ring-secondary focus:border-secondary transition-colors py-3 px-4 bg-gray-50 focus:bg-white">
+                            <option value="per_person">Per Orang (Dewasa & Anak)</option>
+                            <option value="per_package">Per Paket / Tenda</option>
+                        </select>
+                        @error('pricing_type') <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span> @enderror
                     </div>
-                    <div>
-                        <label for="price_child" class="block text-sm font-semibold text-charcoal mb-2">Harga Anak-anak (Rp)</label>
-                        <input type="number" name="price_child" id="price_child" required min="0" class="block w-full border-gray-200 rounded-xl shadow-sm focus:ring-secondary focus:border-secondary transition-colors py-3 px-4 bg-gray-50 focus:bg-white" value="{{ old('price_child', 0) }}">
-                        @error('price_child') <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span> @enderror
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="price_adult" class="block text-sm font-semibold text-charcoal mb-2" x-text="pricingType === 'per_package' ? 'Harga Per Paket (Rp)' : 'Harga Dewasa (Rp)'">Harga Dewasa (Rp)</label>
+                            <input type="number" name="price_adult" id="price_adult" required min="0" class="block w-full border-gray-200 rounded-xl shadow-sm focus:ring-secondary focus:border-secondary transition-colors py-3 px-4 bg-gray-50 focus:bg-white" value="{{ old('price_adult', 0) }}">
+                            @error('price_adult') <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span> @enderror
+                        </div>
+                        <div x-show="pricingType === 'per_person'">
+                            <label for="price_child" class="block text-sm font-semibold text-charcoal mb-2">Harga Anak-anak (Rp)</label>
+                            <input type="number" name="price_child" id="price_child" min="0" class="block w-full border-gray-200 rounded-xl shadow-sm focus:ring-secondary focus:border-secondary transition-colors py-3 px-4 bg-gray-50 focus:bg-white" value="{{ old('price_child', 0) }}">
+                            @error('price_child') <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span> @enderror
+                        </div>
                     </div>
                 </div>
 
