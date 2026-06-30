@@ -34,19 +34,28 @@
                     
                     <p class="text-gray-500 mb-4">Kategori : {{ $destination->category ? $destination->category->name : '-' }}</p>
                     
-                    <div class="flex flex-col sm:flex-row gap-4 mb-6">
-                        <div class="bg-primary/5 p-4 rounded-xl border border-primary/20">
-                            <p class="text-sm text-gray-500 mb-1">Tiket Dewasa</p>
-                            <p class="text-2xl font-bold text-primary">Rp {{ number_format($destination->price_adult, 0, ',', '.') }}</p>
+                    @if($destination->pricing_type === 'per_package')
+                        <div class="mb-6">
+                            <div class="bg-orange-50/50 p-4 rounded-xl border border-orange-100 max-w-sm">
+                                <p class="text-sm text-gray-500 mb-1">Harga Paket / Tenda</p>
+                                <p class="text-2xl font-bold text-orange-500">Rp {{ number_format($destination->price_adult, 0, ',', '.') }}</p>
+                            </div>
                         </div>
-                        <div class="bg-primary/5 p-4 rounded-xl border border-primary/20">
-                            <p class="text-sm text-gray-500 mb-1">Tiket Anak-anak</p>
-                            <p class="text-2xl font-bold text-primary">Rp {{ number_format($destination->price_child, 0, ',', '.') }}</p>
+                    @else
+                        <div class="flex flex-col sm:flex-row gap-4 mb-6">
+                            <div class="bg-primary/5 p-4 rounded-xl border border-primary/20">
+                                <p class="text-sm text-gray-500 mb-1">Tiket Dewasa</p>
+                                <p class="text-2xl font-bold text-primary">Rp {{ number_format($destination->price_adult, 0, ',', '.') }}</p>
+                            </div>
+                            <div class="bg-primary/5 p-4 rounded-xl border border-primary/20">
+                                <p class="text-sm text-gray-500 mb-1">Tiket Anak-anak</p>
+                                <p class="text-2xl font-bold text-primary">Rp {{ number_format($destination->price_child, 0, ',', '.') }}</p>
+                            </div>
                         </div>
-                    </div>
+                    @endif
                     
                     <p class="text-gray-600 leading-relaxed mb-8">
-                        {{ $destination->description }}
+                        {!! nl2br(e($destination->description)) !!}
                     </p>
                     
                     @if(isset($facilities) && count($facilities) > 0)
