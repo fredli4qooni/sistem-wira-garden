@@ -161,6 +161,7 @@
                             <input type="time" id="close_time" class="block w-full pl-10 border-gray-200 rounded-xl shadow-sm focus:ring-secondary focus:border-secondary transition-colors py-3 bg-gray-50 focus:bg-white cursor-pointer">
                         </div>
                     </div>
+                    <p class="text-xs text-gray-500 mt-2"><span class="font-semibold">Tips:</span> Jika jam di laptop Anda format 12-jam, klik <b>PM</b> untuk waktu siang/malam (contoh: jam 2 siang = 02:00 PM). Anda juga bisa langsung mengetik angka 14:00.</p>
                     @error('open_hours') <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span> @enderror
                 </div>
 
