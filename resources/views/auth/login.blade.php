@@ -46,5 +46,14 @@
                 Log in ke Dashboard
             </button>
         </div>
+        
+        <div class="text-center mt-6">
+            <p class="text-sm text-gray-600">
+                Belum punya akun pengunjung? 
+                <a href="{{ route('register') }}" class="font-bold text-primary hover:text-secondary transition-colors">
+                    Daftar di sini
+                </a>
+            </p>
+        </div>
     </form>
 </x-guest-layout>
