@@ -179,7 +179,7 @@
                                 <div class="text-right">
                                     <span class="text-[11px] font-bold text-green-700 bg-green-100 px-2 py-0.5 rounded-md block mb-1">{{ $destination->total_stock }} Unit</span>
                                     @php $availableToday = $destination->getAvailableStock(date('Y-m-d')); @endphp
-                                    <span class="text-[10px] {{ $availableToday > 0 ? 'text-green-600' : 'text-red-500' }} block">Sisa hr ini: {{ $availableToday }}</span>
+                                    <span class="text-[10px] {{ $availableToday > 0 ? 'text-green-600' : 'text-red-500' }} block">Sisa hari ini: {{ $availableToday }}</span>
                                 </div>
                             </div>
                         @endif
