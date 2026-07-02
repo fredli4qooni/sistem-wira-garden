@@ -92,7 +92,7 @@
                             <div x-show="currentDestination">
                                 <div class="flex items-center justify-between mb-4">
                                     <label class="block text-sm font-semibold text-charcoal" x-text="currentDestination.pricing_type === 'per_package' ? 'Jumlah Paket / Tenda' : 'Jumlah Tiket'">Jumlah Tiket</label>
-                                    <template x-if="availableStock !== null">
+                                    <template x-if="availableStock !== null && availableStock !== undefined">
                                         <span class="text-xs font-bold px-2.5 py-1 rounded-full" 
                                             :class="availableStock > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
                                             x-text="availableStock > 0 ? 'Sisa: ' + availableStock + ' unit' : 'Habis Terpesan'"></span>

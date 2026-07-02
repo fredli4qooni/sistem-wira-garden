@@ -17,8 +17,8 @@
                 <thead class="bg-gray-50/50">
                     <tr>
                         <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Nama Destinasi</th>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Alamat</th>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Jam Buka</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Kuota Harian</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Sisa Hari Ini</th>
                         <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
                         <th class="px-6 py-4 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">Aksi</th>
                     </tr>
@@ -27,8 +27,19 @@
                     @forelse($destinations as $item)
                     <tr class="hover:bg-gray-50/50 transition-colors">
                         <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{{ $item->name }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-gray-500 text-sm">{{ Str::limit($item->address, 30) }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-gray-500 text-sm">{{ $item->open_hours }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-500 text-sm">
+                            {{ $item->total_stock !== null ? $item->total_stock . ' Unit' : 'Tidak Terbatas' }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-500 text-sm font-bold">
+                            @if($item->total_stock !== null)
+                                @php $available = $item->getAvailableStock(date('Y-m-d')); @endphp
+                                <span class="{{ $available > 0 ? 'text-green-600' : 'text-red-600' }}">
+                                    {{ $available }} Unit
+                                </span>
+                            @else
+                                <span class="text-gray-400">-</span>
+                            @endif
+                        </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-50 text-green-700 border border-green-200">
                                 Aktif
