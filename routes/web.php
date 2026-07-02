@@ -23,10 +23,23 @@ use App\Http\Controllers\Admin\DestinationController as AdminDestinationControll
 use App\Http\Controllers\Admin\GalleryController as AdminGalleryController;
 use App\Http\Controllers\Admin\VisitQuotaController;
 
-Route::get('/reservasi', [ReservationController::class, 'create'])->name('reservations.create');
-Route::post('/reservasi', [ReservationController::class, 'store'])->name('reservations.store');
-Route::get('/reservasi/{order:order_code}/payment', [ReservationController::class, 'payment'])->name('reservations.payment');
-Route::get('/reservasi/{order:order_code}/success', [ReservationController::class, 'success'])->name('reservations.success');
+Route::get('/api/check-stock', function (Illuminate\Http\Request $request) {
+    $destination = \App\Models\Destination::find($request->destination_id);
+    if (!$destination) return response()->json(['available_stock' => null]);
+    
+    $stock = $destination->getAvailableStock($request->visit_date);
+    return response()->json(['available_stock' => $stock]);
+})->name('api.check-stock');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/reservasi', [ReservationController::class, 'create'])->name('reservations.create');
+    Route::post('/reservasi', [ReservationController::class, 'store'])->name('reservations.store');
+    Route::get('/reservasi/{order:order_code}/payment', [ReservationController::class, 'payment'])->name('reservations.payment');
+    Route::get('/reservasi/{order:order_code}/success', [ReservationController::class, 'success'])->name('reservations.success');
+    
+    Route::get('/riwayat-pesanan', [App\Http\Controllers\User\OrderController::class, 'index'])->name('user.orders.index');
+    Route::get('/riwayat-pesanan/{order:order_code}', [App\Http\Controllers\User\OrderController::class, 'show'])->name('user.orders.show');
+});
 
 Route::post('/webhook/midtrans', [MidtransWebhookController::class, 'handle'])->name('webhook.midtrans');
 

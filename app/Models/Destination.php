@@ -9,6 +9,7 @@ class Destination extends Model
     protected $fillable = [
         'name',
         'description',
+        'total_stock',
         'pricing_type',
         'price_adult',
         'price_child',
@@ -31,5 +32,20 @@ class Destination extends Model
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+    
+    public function getAvailableStock($date)
+    {
+        if (is_null($this->total_stock)) {
+            return null; // Unlimited
+        }
+        
+        $bookedQuantity = OrderItem::whereHas('order', function ($query) use ($date) {
+            $query->where('destination_id', $this->id)
+                  ->whereDate('visit_date', $date)
+                  ->where('status', '!=', 'CANCELLED');
+        })->sum('quantity');
+        
+        return max(0, $this->total_stock - $bookedQuantity);
     }
 }

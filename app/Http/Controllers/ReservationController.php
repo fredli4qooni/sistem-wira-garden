@@ -78,13 +78,24 @@ class ReservationController extends Controller
 
         DB::beginTransaction();
         try {
+            $destination = Destination::findOrFail($request->destination_id);
+            
+            // Check Stock for Destinations that have limited stock (like Tents)
+            if (!is_null($destination->total_stock)) {
+                // For package pricing, tickets_adult acts as the number of tents
+                $quantityRequested = $destination->pricing_type === 'per_package' ? $request->tickets_adult : $totalTickets;
+                $availableStock = $destination->getAvailableStock($request->visit_date);
+                
+                if ($quantityRequested > $availableStock) {
+                    return back()->withInput()->withErrors(['visit_date' => 'Maaf, sisa ketersediaan untuk tanggal ini hanya tinggal ' . $availableStock . ' unit.']);
+                }
+            }
+
             // Update Quota if exists
             if ($quota) {
                 $quota->increment('used_quota', $totalTickets);
             }
 
-            $destination = Destination::findOrFail($request->destination_id);
-            
             if ($destination->pricing_type === 'per_package') {
                 $totalAmount = $destination->price_adult * $request->tickets_adult;
             } else {
@@ -94,6 +105,7 @@ class ReservationController extends Controller
             $orderCode = 'WG-' . date('Ymd') . '-' . strtoupper(Str::random(5));
             $order = Order::create([
                 'order_code' => $orderCode,
+                'user_id' => auth()->id(),
                 'destination_id' => $destination->id,
                 'visitor_name' => $request->visitor_name,
                 'phone' => $request->phone,
@@ -170,6 +182,10 @@ class ReservationController extends Controller
 
     public function payment(Order $order)
     {
+        if ($order->user_id !== auth()->id() && auth()->user()->role !== 'admin') {
+            abort(403);
+        }
+        
         if ($order->status !== 'PENDING') {
             return redirect()->route('reservations.success', $order->order_code);
         }
@@ -180,6 +196,10 @@ class ReservationController extends Controller
 
     public function success(Order $order)
     {
+        if ($order->user_id !== auth()->id() && auth()->user()->role !== 'admin') {
+            abort(403);
+        }
+        
         return view('reservations.success', compact('order'));
     }
 }

@@ -85,12 +85,19 @@
                             <!-- Tanggal -->
                             <div>
                                 <label for="visit_date" class="block text-sm font-semibold text-charcoal mb-2">Tanggal Kunjungan</label>
-                                <input type="date" name="visit_date" id="visit_date" value="{{ old('visit_date', date('Y-m-d')) }}" min="{{ date('Y-m-d') }}" required class="block w-full border-gray-200 rounded-xl shadow-sm focus:ring-secondary focus:border-secondary transition-colors py-3 px-4 bg-gray-50 focus:bg-white">
+                                <input type="date" name="visit_date" id="visit_date" x-model="visitDate" @change="checkStock" min="{{ date('Y-m-d') }}" required class="block w-full border-gray-200 rounded-xl shadow-sm focus:ring-secondary focus:border-secondary transition-colors py-3 px-4 bg-gray-50 focus:bg-white">
                             </div>
 
                             <!-- Jumlah Tiket -->
                             <div x-show="currentDestination">
-                                <label class="block text-sm font-semibold text-charcoal mb-4" x-text="currentDestination.pricing_type === 'per_package' ? 'Jumlah Paket / Tenda' : 'Jumlah Tiket'">Jumlah Tiket</label>
+                                <div class="flex items-center justify-between mb-4">
+                                    <label class="block text-sm font-semibold text-charcoal" x-text="currentDestination.pricing_type === 'per_package' ? 'Jumlah Paket / Tenda' : 'Jumlah Tiket'">Jumlah Tiket</label>
+                                    <template x-if="availableStock !== null">
+                                        <span class="text-xs font-bold px-2.5 py-1 rounded-full" 
+                                            :class="availableStock > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
+                                            x-text="availableStock > 0 ? 'Sisa: ' + availableStock + ' unit' : 'Habis Terpesan'"></span>
+                                    </template>
+                                </div>
                                 
                                 <div class="space-y-4">
                                     <template x-if="currentDestination.pricing_type === 'per_package'">
@@ -98,8 +105,8 @@
                                             <span class="text-gray-700">Jumlah</span>
                                             <div class="flex items-center border border-gray-200 rounded-lg">
                                                 <button type="button" class="px-3 py-1 text-gray-500 hover:bg-gray-100 rounded-l-lg" @click="if(ticketsAdult > 0) ticketsAdult--">-</button>
-                                                <input type="number" name="tickets_adult" id="tickets_adult_pkg" x-model.number="ticketsAdult" min="0" class="w-12 text-center border-none focus:ring-0 p-0 text-gray-700 py-1" readonly>
-                                                <button type="button" class="px-3 py-1 text-gray-500 hover:bg-gray-100 rounded-r-lg" @click="ticketsAdult++">+</button>
+                                                <input type="number" name="tickets_adult" id="tickets_adult_pkg" x-model.number="ticketsAdult" min="0" :max="availableStock !== null ? availableStock : ''" class="w-12 text-center border-none focus:ring-0 p-0 text-gray-700 py-1" readonly>
+                                                <button type="button" class="px-3 py-1 text-gray-500 hover:bg-gray-100 rounded-r-lg" @click="if(availableStock === null || ticketsAdult < availableStock) ticketsAdult++">+</button>
                                             </div>
                                             <input type="hidden" name="tickets_child" value="0">
                                         </div>
@@ -143,7 +150,7 @@
                         <div class="space-y-6">
                             <div>
                                 <label for="visitor_name" class="block text-sm font-semibold text-charcoal mb-2">Nama Lengkap</label>
-                                <input type="text" name="visitor_name" id="visitor_name" value="{{ old('visitor_name') }}" required class="block w-full border-gray-200 rounded-xl shadow-sm focus:ring-secondary focus:border-secondary transition-colors py-3 px-4 bg-gray-50 focus:bg-white" placeholder="Masukkan nama lengkap">
+                                <input type="text" name="visitor_name" id="visitor_name" value="{{ old('visitor_name', auth()->user()->name ?? '') }}" required class="block w-full border-gray-200 rounded-xl shadow-sm focus:ring-secondary focus:border-secondary transition-colors py-3 px-4 bg-gray-50 focus:bg-white" placeholder="Masukkan nama lengkap">
                             </div>
                             
                             <div>
@@ -153,12 +160,12 @@
                             
                             <div>
                                 <label for="email" class="block text-sm font-semibold text-charcoal mb-2">Email (opsional)</label>
-                                <input type="email" name="email" id="email" value="{{ old('email') }}" class="block w-full border-gray-200 rounded-xl shadow-sm focus:ring-secondary focus:border-secondary transition-colors py-3 px-4 bg-gray-50 focus:bg-white" placeholder="Masukkan email">
+                                <input type="email" name="email" id="email" value="{{ old('email', auth()->user()->email ?? '') }}" class="block w-full border-gray-200 rounded-xl shadow-sm focus:ring-secondary focus:border-secondary transition-colors py-3 px-4 bg-gray-50 focus:bg-white" placeholder="Masukkan email">
                             </div>
                         </div>
 
                         <div class="mt-8">
-                            <button type="submit" class="w-full bg-primary text-white font-bold py-4 rounded-xl shadow-sm hover:bg-green-700 transition-colors">
+                            <button type="submit" :disabled="availableStock !== null && availableStock === 0" class="w-full bg-primary text-white font-bold py-4 rounded-xl shadow-sm hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                                 Lanjut ke Pembayaran
                             </button>
                         </div>
@@ -176,8 +183,10 @@
             destinations: @json($destinations),
             selectedId: '{{ $selectedDestination->id ?? ($destinations->first()->id ?? "") }}',
             currentDestination: null,
+            visitDate: '{{ old('visit_date', date('Y-m-d')) }}',
             ticketsAdult: {{ old('tickets_adult', 1) }},
             ticketsChild: {{ old('tickets_child', 0) }},
+            availableStock: null,
             
             init() {
                 this.updateDestination();
@@ -193,11 +202,28 @@
                 // Find destination details
                 const dest = this.destinations.find(d => d.id == this.selectedId);
                 if(dest) {
-                    // We need to construct the image URL. In Laravel, Storage::url is used.
-                    // Let's assume the path is 'storage/' + dest.image
-                    // Note: Alpine runs on client side, so we build the url manually or pass it from backend
-                    // Luckily we can map the destinations from backend to include image_url
                     this.currentDestination = dest;
+                    this.checkStock();
+                }
+            },
+            
+            async checkStock() {
+                if(!this.selectedId || !this.visitDate || !this.currentDestination) return;
+                
+                try {
+                    const response = await fetch(`/api/check-stock?destination_id=${this.selectedId}&visit_date=${this.visitDate}`);
+                    const data = await response.json();
+                    
+                    this.availableStock = data.available_stock;
+                    
+                    // Reset quantity if it exceeds stock
+                    if (this.availableStock !== null && this.currentDestination.pricing_type === 'per_package') {
+                        if (this.ticketsAdult > this.availableStock) {
+                            this.ticketsAdult = this.availableStock;
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error checking stock:', error);
                 }
             },
             

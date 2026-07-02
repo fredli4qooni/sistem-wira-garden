@@ -52,7 +52,21 @@
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
                     </a>
                     
-                    <a href="{{ route('reservations.create') }}" class="btn-primary ml-4 !px-6 !py-2 text-sm shadow-md">Reservasi</a>
+                    @auth
+                        @if(auth()->user()->role === 'admin')
+                            <a href="{{ route('admin.dashboard') }}" class="text-primary hover:text-green-800 px-3 py-2 font-bold transition-colors">Dashboard Admin</a>
+                        @else
+                            <a href="{{ route('user.orders.index') }}" class="text-primary hover:text-green-800 px-3 py-2 font-bold transition-colors">Riwayat Reservasi</a>
+                            <form method="POST" action="{{ route('logout') }}" class="inline">
+                                @csrf
+                                <button type="submit" class="text-red-500 hover:text-red-700 px-3 py-2 font-medium transition-colors">Keluar</button>
+                            </form>
+                        @endif
+                        <a href="{{ route('reservations.create') }}" class="btn-primary ml-2 !px-6 !py-2 text-sm shadow-md">Reservasi</a>
+                    @else
+                        <a href="{{ route('login') }}" class="text-charcoal hover:text-primary px-3 py-2 font-medium transition-colors">Masuk</a>
+                        <a href="{{ route('register') }}" class="btn-primary ml-2 !px-6 !py-2 text-sm shadow-md">Daftar</a>
+                    @endauth
                 </div>
 
                 <!-- Mobile menu button -->
@@ -80,7 +94,22 @@
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
                     Hubungi Kami
                 </a>
-                <a href="{{ route('reservations.create') }}" class="block w-full text-center btn-primary mt-4">Reservasi Sekarang</a>
+                
+                @auth
+                    @if(auth()->user()->role === 'admin')
+                        <a href="{{ route('admin.dashboard') }}" class="block px-3 py-3 text-base font-bold text-primary hover:text-green-800 hover:bg-secondary/5 rounded-xl">Dashboard Admin</a>
+                    @else
+                        <a href="{{ route('user.orders.index') }}" class="block px-3 py-3 text-base font-bold text-primary hover:text-green-800 hover:bg-secondary/5 rounded-xl">Riwayat Reservasi</a>
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit" class="block w-full text-left px-3 py-3 text-base font-medium text-red-500 hover:text-red-700 hover:bg-red-50 rounded-xl">Keluar</button>
+                        </form>
+                    @endif
+                    <a href="{{ route('reservations.create') }}" class="block w-full text-center btn-primary mt-4">Reservasi Sekarang</a>
+                @else
+                    <a href="{{ route('login') }}" class="block px-3 py-3 text-base font-medium text-charcoal hover:text-primary hover:bg-primary/5 rounded-xl">Masuk</a>
+                    <a href="{{ route('register') }}" class="block w-full text-center btn-primary mt-4">Daftar Sekarang</a>
+                @endauth
             </div>
         </div>
     </nav>
@@ -123,9 +152,11 @@
             <div class="mt-12 pt-8 border-t border-white/10 text-sm text-gray-400 flex flex-col sm:flex-row justify-between items-center gap-4">
                 <p>&copy; {{ date('Y') }} Wira Garden. Hak Cipta Dilindungi.</p>
                 @auth
-                    <a href="{{ url('/dashboard') }}" class="text-accent hover:text-white transition-colors font-medium">Dashboard Admin</a>
+                    @if(auth()->user()->role === 'admin')
+                        <a href="{{ url('/admin/dashboard') }}" class="text-accent hover:text-white transition-colors font-medium">Dashboard Admin</a>
+                    @endif
                 @else
-                    <a href="{{ route('login') }}" class="text-gray-400 hover:text-white transition-colors">Login Pengelola</a>
+                    <a href="{{ route('login') }}" class="text-gray-400 hover:text-white transition-colors">Login Admin</a>
                 @endauth
             </div>
         </div>

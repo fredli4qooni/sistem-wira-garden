@@ -39,6 +39,7 @@ class DestinationController extends Controller
             'open_hours' => 'required|string|max:100',
             'maps_url' => 'nullable|url',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'total_stock' => 'nullable|integer|min:1',
         ]);
 
         if (empty($validated['facilities'])) {
@@ -84,6 +85,7 @@ class DestinationController extends Controller
             'open_hours' => 'required|string|max:100',
             'maps_url' => 'nullable|url',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'total_stock' => 'nullable|integer|min:1',
         ]);
 
         if (empty($validated['facilities'])) {
