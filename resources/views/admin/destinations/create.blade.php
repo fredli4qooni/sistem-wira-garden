@@ -94,10 +94,10 @@
                     </div>
                 </div>
 
-                <div x-show="pricingType === 'per_package'" style="display: none;">
-                    <label for="total_stock" class="block text-sm font-semibold text-charcoal mb-2">Total Stok Unit / Tenda <span class="text-gray-400 font-normal">(Kosongkan jika tidak terbatas)</span></label>
+                <div>
+                    <label for="total_stock" class="block text-sm font-semibold text-charcoal mb-2">Total Stok Unit / Tiket Harian <span class="text-gray-400 font-normal">(Kosongkan jika tidak terbatas)</span></label>
                     <input type="number" name="total_stock" id="total_stock" min="1" class="block w-full border-gray-200 rounded-xl shadow-sm focus:ring-secondary focus:border-secondary transition-colors py-3 px-4 bg-gray-50 focus:bg-white max-w-sm" value="{{ old('total_stock') }}">
-                    <p class="text-xs text-gray-500 mt-2">Menentukan jumlah maksimal pesanan paket/tenda per harinya.</p>
+                    <p class="text-xs text-gray-500 mt-2">Menentukan jumlah maksimal kuota pesanan per harinya (Misal: maksimal tenda, atau maksimal tiket pengunjung).</p>
                     @error('total_stock') <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span> @enderror
                 </div>
 
