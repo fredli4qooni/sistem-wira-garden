@@ -81,8 +81,20 @@
                     
                     <hr class="border-dashed border-gray-200 mb-4 mt-auto">
                     
-                    <!-- Prices -->
+                    <!-- Prices & Stock -->
                     <div class="bg-gray-50/80 rounded-xl border border-gray-100 p-3 mb-4 space-y-2.5">
+                        @if($destination->total_stock !== null)
+                            <div class="flex items-center justify-between pb-2 mb-2 border-b border-gray-100 border-dashed">
+                                <div class="flex items-center gap-2 text-gray-500">
+                                    <div class="w-6 h-6 rounded-full bg-green-50 text-green-600 flex items-center justify-center shrink-0">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                                    </div>
+                                    <span class="text-[11px] font-bold uppercase tracking-wider text-green-700">Kuota Harian</span>
+                                </div>
+                                <span class="text-[11px] font-bold text-green-700 bg-green-100 px-2 py-0.5 rounded-md">{{ $destination->total_stock }} Unit</span>
+                            </div>
+                        @endif
+
                         @if($destination->pricing_type === 'per_package')
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center gap-2 text-gray-500">
