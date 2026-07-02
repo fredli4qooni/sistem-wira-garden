@@ -22,6 +22,7 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\DestinationController as AdminDestinationController;
 use App\Http\Controllers\Admin\GalleryController as AdminGalleryController;
 use App\Http\Controllers\Admin\VisitQuotaController;
+use App\Http\Controllers\Admin\UserController;
 
 Route::get('/api/check-stock', function (Illuminate\Http\Request $request) {
     $destination = \App\Models\Destination::find($request->destination_id);
@@ -57,6 +58,7 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
     Route::resource('quotas', VisitQuotaController::class);
     Route::resource('facilities', App\Http\Controllers\Admin\FacilityController::class);
     Route::resource('categories', App\Http\Controllers\Admin\CategoryController::class);
+    Route::resource('users', UserController::class)->except('show');
     Route::get('/settings', [App\Http\Controllers\Admin\SettingController::class, 'index'])->name('settings.index');
     Route::post('/settings', [App\Http\Controllers\Admin\SettingController::class, 'store'])->name('settings.store');
     
