@@ -19,7 +19,7 @@
         <div class="min-h-screen flex">
             <!-- Left Side: Image -->
             <div class="hidden lg:flex lg:w-1/2 relative bg-gray-900 items-center justify-center overflow-hidden">
-                <img src="{{ asset('images/gambar-wira-garden.png') }}" class="absolute inset-0 w-full h-full object-cover opacity-80" alt="Wira Garden">
+                <img src="{{ asset(setting('login_background', 'images/gambar-wira-garden.png')) }}" class="absolute inset-0 w-full h-full object-cover opacity-80" alt="Wira Garden">
                 <div class="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/40 to-transparent"></div>
                 <div class="absolute inset-0 bg-gradient-to-b from-primary/30 to-transparent"></div>
                 <div class="relative z-10 p-10 bg-black/40 backdrop-blur-md rounded-3xl text-center text-white border border-white/20 transform -rotate-2 shadow-2xl hover:rotate-0 transition-transform duration-500 max-w-sm">

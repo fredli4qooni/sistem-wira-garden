@@ -16,6 +16,7 @@ class SettingSeeder extends Seeder
             ['key' => 'hero_subtitle', 'value' => 'Ciptakan momen tak terlupakan di alam bebas.', 'type' => 'textarea', 'label' => 'Sub-Judul Hero'],
             ['key' => 'hero_image', 'value' => 'images/gambar-keluarga.png', 'type' => 'image', 'label' => 'Gambar Hero'],
             ['key' => 'contact_whatsapp', 'value' => '6281234567890', 'type' => 'text', 'label' => 'Nomor WhatsApp Admin'],
+            ['key' => 'login_background', 'value' => 'images/gambar-wira-garden.png', 'type' => 'image', 'label' => 'Gambar Background Login'],
         ];
 
         foreach ($settings as $setting) {
