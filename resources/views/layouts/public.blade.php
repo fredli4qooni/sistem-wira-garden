@@ -40,33 +40,61 @@
                 </div>
 
                 <!-- Desktop Menu -->
-                <div class="hidden sm:flex sm:items-center sm:space-x-8">
-                    <a href="{{ url('/') }}" class="text-charcoal hover:text-secondary px-3 py-2 font-medium transition-colors">Beranda</a>
-                    <a href="{{ route('about') }}" class="text-charcoal hover:text-secondary px-3 py-2 font-medium transition-colors">Tentang Kami</a>
-                    <a href="{{ route('destinations.index') }}" class="text-charcoal hover:text-secondary px-3 py-2 font-medium transition-colors">Destinasi</a>
-                    <a href="{{ route('facilities.index') }}" class="text-charcoal hover:text-secondary px-3 py-2 font-medium transition-colors">Fasilitas</a>
-                    <a href="{{ route('tickets.index') }}" class="text-charcoal hover:text-secondary px-3 py-2 font-medium transition-colors">Harga Tiket</a>
-                    <a href="{{ route('galleries.index') }}" class="text-charcoal hover:text-secondary px-3 py-2 font-medium transition-colors">Galeri</a>
+                <div class="hidden sm:flex sm:items-center sm:space-x-6">
+                    <a href="{{ url('/') }}" class="text-charcoal hover:text-secondary px-2 py-2 font-medium transition-colors">Beranda</a>
+                    <a href="{{ route('destinations.index') }}" class="text-charcoal hover:text-secondary px-2 py-2 font-medium transition-colors">Destinasi</a>
+                    
+                    <!-- Informasi Dropdown -->
+                    <div class="relative" x-data="{ openDropdown: false }" @click.away="openDropdown = false" @mouseleave="openDropdown = false" @mouseenter="openDropdown = true">
+                        <button @click="openDropdown = !openDropdown" class="text-charcoal hover:text-secondary px-2 py-2 font-medium transition-colors flex items-center gap-1">
+                            Informasi
+                            <svg class="w-4 h-4 transition-transform duration-200" :class="{ 'rotate-180': openDropdown }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        
+                        <div x-show="openDropdown" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="transform opacity-100 scale-100" x-transition:leave-end="transform opacity-0 scale-95" class="absolute left-0 mt-1 w-48 rounded-xl shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none" style="display: none;">
+                            <div class="py-1">
+                                <a href="{{ route('about') }}" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-green-50 hover:text-primary transition-colors">Tentang Kami</a>
+                                <a href="{{ route('facilities.index') }}" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-green-50 hover:text-primary transition-colors">Fasilitas</a>
+                                <a href="{{ route('tickets.index') }}" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-green-50 hover:text-primary transition-colors">Harga Tiket</a>
+                                <a href="{{ route('galleries.index') }}" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-green-50 hover:text-primary transition-colors">Galeri</a>
+                            </div>
+                        </div>
+                    </div>
                     
                     <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', setting('contact_whatsapp', '6281234567890')) }}" target="_blank" class="text-charcoal hover:text-primary transition-colors flex items-center justify-center p-2 rounded-full hover:bg-primary/5" title="Hubungi Kami">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
                     </a>
                     
                     @auth
-                        @if(auth()->user()->role === 'admin')
-                            <a href="{{ route('admin.dashboard') }}" class="text-primary hover:text-green-800 px-3 py-2 font-bold transition-colors">Dashboard Admin</a>
-                        @else
-                            <a href="{{ route('user.orders.index') }}" class="text-primary hover:text-green-800 px-3 py-2 font-bold transition-colors">Riwayat Reservasi</a>
-                            <form method="POST" action="{{ route('logout') }}" class="inline">
-                                @csrf
-                                <button type="submit" class="text-red-500 hover:text-red-700 px-3 py-2 font-medium transition-colors">Keluar</button>
-                            </form>
-                        @endif
-                        <a href="{{ route('reservations.create') }}" class="btn-primary ml-2 !px-6 !py-2 text-sm shadow-md">Reservasi</a>
+                        <!-- User Dropdown -->
+                        <div class="relative ml-2" x-data="{ userMenu: false }" @click.away="userMenu = false">
+                            <button @click="userMenu = !userMenu" class="flex items-center gap-2 text-charcoal hover:text-primary font-medium transition-colors bg-gray-50 px-3 py-1.5 rounded-full border border-gray-200">
+                                <div class="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center text-xs">
+                                    {{ substr(auth()->user()->name, 0, 1) }}
+                                </div>
+                                <span class="max-w-[100px] truncate text-sm">{{ auth()->user()->name }}</span>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </button>
+                            
+                            <div x-show="userMenu" x-transition class="absolute right-0 mt-2 w-48 rounded-xl shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100" style="display: none;">
+                                <div class="py-1">
+                                    @if(auth()->user()->role === 'admin')
+                                        <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-green-50 hover:text-primary">Dashboard Admin</a>
+                                    @else
+                                        <a href="{{ route('user.orders.index') }}" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-green-50 hover:text-primary">Riwayat Reservasi</a>
+                                    @endif
+                                    <form method="POST" action="{{ route('logout') }}">
+                                        @csrf
+                                        <button type="submit" class="block w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50">Keluar</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     @else
-                        <a href="{{ route('login') }}" class="text-charcoal hover:text-primary px-3 py-2 font-medium transition-colors">Masuk</a>
-                        <a href="{{ route('register') }}" class="btn-primary ml-2 !px-6 !py-2 text-sm shadow-md">Daftar</a>
+                        <a href="{{ route('login') }}" class="text-charcoal hover:text-primary px-3 py-2 font-medium transition-colors ml-2 border-l border-gray-200">Masuk</a>
                     @endauth
+                    
+                    <a href="{{ route('reservations.create') }}" class="btn-primary ml-2 !px-5 !py-2 text-sm shadow-md">Reservasi</a>
                 </div>
 
                 <!-- Mobile menu button -->
@@ -85,11 +113,21 @@
         <div x-show="open" class="sm:hidden bg-white/95 backdrop-blur-md border-t border-gray-100 shadow-xl" x-transition style="display: none;">
             <div class="px-4 pt-2 pb-6 space-y-1">
                 <a href="{{ url('/') }}" class="block px-3 py-3 text-base font-medium text-charcoal hover:text-secondary hover:bg-secondary/5 rounded-xl">Beranda</a>
-                <a href="{{ route('about') }}" class="block px-3 py-3 text-base font-medium text-charcoal hover:text-secondary hover:bg-secondary/5 rounded-xl">Tentang Kami</a>
                 <a href="{{ route('destinations.index') }}" class="block px-3 py-3 text-base font-medium text-charcoal hover:text-secondary hover:bg-secondary/5 rounded-xl">Destinasi</a>
-                <a href="{{ route('facilities.index') }}" class="block px-3 py-3 text-base font-medium text-charcoal hover:text-secondary hover:bg-secondary/5 rounded-xl">Fasilitas</a>
-                <a href="{{ route('tickets.index') }}" class="block px-3 py-3 text-base font-medium text-charcoal hover:text-secondary hover:bg-secondary/5 rounded-xl">Harga Tiket</a>
-                <a href="{{ route('galleries.index') }}" class="block px-3 py-3 text-base font-medium text-charcoal hover:text-secondary hover:bg-secondary/5 rounded-xl">Galeri</a>
+                
+                <div x-data="{ infoOpen: false }">
+                    <button @click="infoOpen = !infoOpen" class="w-full text-left px-3 py-3 text-base font-medium text-charcoal hover:text-secondary hover:bg-secondary/5 rounded-xl flex justify-between items-center">
+                        Informasi
+                        <svg class="w-4 h-4 transition-transform duration-200" :class="{ 'rotate-180': infoOpen }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div x-show="infoOpen" class="pl-4 space-y-1" style="display: none;">
+                        <a href="{{ route('about') }}" class="block px-3 py-2 text-base font-medium text-gray-500 hover:text-secondary">Tentang Kami</a>
+                        <a href="{{ route('facilities.index') }}" class="block px-3 py-2 text-base font-medium text-gray-500 hover:text-secondary">Fasilitas</a>
+                        <a href="{{ route('tickets.index') }}" class="block px-3 py-2 text-base font-medium text-gray-500 hover:text-secondary">Harga Tiket</a>
+                        <a href="{{ route('galleries.index') }}" class="block px-3 py-2 text-base font-medium text-gray-500 hover:text-secondary">Galeri</a>
+                    </div>
+                </div>
+                
                 <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', setting('contact_whatsapp', '6281234567890')) }}" target="_blank" class="block px-3 py-3 text-base font-medium text-charcoal hover:text-secondary hover:bg-secondary/5 rounded-xl flex items-center gap-3">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
                     Hubungi Kami
