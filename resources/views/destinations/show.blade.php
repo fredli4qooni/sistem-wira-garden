@@ -55,15 +55,22 @@
                     @endif
                     
                     @if($destination->total_stock !== null)
-                    <div class="mb-6 flex items-center gap-2 bg-green-50/50 p-3 rounded-xl border border-green-100 w-fit">
-                        <div class="w-8 h-8 rounded-full bg-green-100 text-green-600 flex items-center justify-center shrink-0">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-2xl border border-gray-100 mb-6">
+                            <div>
+                                <p class="text-sm font-medium text-gray-500 mb-1">Kapasitas Maksimal</p>
+                                <div class="flex items-center gap-2 text-green-700">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                                    <span class="font-bold">{{ $destination->total_stock }} Unit / Hari</span>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-sm font-medium text-gray-500 mb-1">Sisa Hari Ini</p>
+                                @php $availableToday = $destination->getAvailableStock(date('Y-m-d')); @endphp
+                                <span class="font-bold px-3 py-1 rounded-full text-sm {{ $availableToday > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                                    {{ $availableToday }} Unit
+                                </span>
+                            </div>
                         </div>
-                        <div>
-                            <p class="text-xs text-gray-500">Kapasitas Maksimal</p>
-                            <p class="text-sm font-bold text-green-700">{{ $destination->total_stock }} Unit / Hari</p>
-                        </div>
-                    </div>
                     @endif
                     
                     <p class="text-gray-600 leading-relaxed mb-8">
