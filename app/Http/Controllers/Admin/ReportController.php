@@ -40,7 +40,7 @@ class ReportController extends Controller
 
     private function getFilteredQuery($start, $end)
     {
-        return Order::with(['destination', 'items'])
+        return Order::with('items.destination')
             ->whereBetween('created_at', [$start . ' 00:00:00', $end . ' 23:59:59']);
     }
 
@@ -110,7 +110,7 @@ class ReportController extends Controller
         $count = 1;
         foreach ($orders as $order) {
             $totalTickets = $order->items->sum('quantity');
-            $wisata = $order->destination ? $order->destination->name : '-';
+            $wisata = $order->items->count() > 0 ? $order->items->pluck('destination.name')->filter()->unique()->join(', ') : '-';
             
             fputcsv($handle, [
                 $count++,

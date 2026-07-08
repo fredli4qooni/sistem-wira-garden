@@ -53,41 +53,103 @@ class ReservationController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'destination_id' => 'required|exists:destinations,id',
             'visitor_name' => 'required|string|max:255',
             'phone' => 'required|string|max:20',
             'email' => 'nullable|email|max:255',
             'visit_date' => 'required|date|after_or_equal:today',
-            'tickets_adult' => 'required|integer|min:0',
-            'tickets_child' => 'required|integer|min:0',
+            'cart_items' => 'required|string',
         ]);
 
-        $totalTickets = $request->tickets_adult + $request->tickets_child;
-        if ($totalTickets <= 0) {
-            return back()->withInput()->withErrors(['tickets' => 'Silakan pilih minimal 1 tiket.']);
-        }
-
-        // Check Quota
-        $quota = VisitQuota::where('date', $request->visit_date)->first();
-        if ($quota && $quota->is_blocked) {
-            return back()->withInput()->withErrors(['visit_date' => 'Maaf, tanggal ini tidak tersedia untuk kunjungan.']);
-        }
-        if ($quota && ($quota->used_quota + $totalTickets > $quota->max_quota)) {
-            return back()->withInput()->withErrors(['visit_date' => 'Maaf, kuota kunjungan pada tanggal ini penuh.']);
+        $cartItems = json_decode($request->cart_items, true);
+        if (empty($cartItems) || !is_array($cartItems)) {
+            return back()->withInput()->withErrors(['cart' => 'Keranjang pesanan tidak boleh kosong.']);
         }
 
         DB::beginTransaction();
         try {
-            $destination = Destination::findOrFail($request->destination_id);
-            
-            // Check Stock for Destinations that have limited stock (like Tents)
-            if (!is_null($destination->total_stock)) {
-                // For package pricing, tickets_adult acts as the number of tents
-                $quantityRequested = $destination->pricing_type === 'per_package' ? $request->tickets_adult : $totalTickets;
-                $availableStock = $destination->getAvailableStock($request->visit_date);
+            $totalAmount = 0;
+            $totalTickets = 0;
+            $itemsToCreate = [];
+            $destinationQuantities = [];
+
+            foreach ($cartItems as $item) {
+                if (!isset($item['destination_id'])) continue;
                 
-                if ($quantityRequested > $availableStock) {
-                    return back()->withInput()->withErrors(['visit_date' => 'Maaf, sisa ketersediaan untuk tanggal ini hanya tinggal ' . $availableStock . ' unit.']);
+                $destination = Destination::findOrFail($item['destination_id']);
+                
+                $qtyAdult = isset($item['tickets_adult']) ? (int) $item['tickets_adult'] : 0;
+                $qtyChild = isset($item['tickets_child']) ? (int) $item['tickets_child'] : 0;
+                
+                if ($qtyAdult <= 0 && $qtyChild <= 0) continue;
+
+                if ($destination->pricing_type === 'per_package') {
+                    $itemTotal = $destination->price_adult * $qtyAdult;
+                    $totalTickets += $qtyAdult; // Package qty
+                    
+                    if (!isset($destinationQuantities[$destination->id])) $destinationQuantities[$destination->id] = 0;
+                    $destinationQuantities[$destination->id] += $qtyAdult;
+
+                    $itemsToCreate[] = [
+                        'destination_id' => $destination->id,
+                        'ticket_type_id' => null,
+                        'ticket_name' => 'Paket / Tenda (' . $destination->name . ')',
+                        'quantity' => $qtyAdult,
+                        'unit_price' => $destination->price_adult,
+                        'subtotal' => $itemTotal,
+                    ];
+                } else {
+                    $itemTotal = ($destination->price_adult * $qtyAdult) + ($destination->price_child * $qtyChild);
+                    $totalTickets += ($qtyAdult + $qtyChild);
+                    
+                    if (!isset($destinationQuantities[$destination->id])) $destinationQuantities[$destination->id] = 0;
+                    $destinationQuantities[$destination->id] += ($qtyAdult + $qtyChild);
+
+                    if ($qtyAdult > 0) {
+                        $itemsToCreate[] = [
+                            'destination_id' => $destination->id,
+                            'ticket_type_id' => null,
+                            'ticket_name' => 'Dewasa (' . $destination->name . ')',
+                            'quantity' => $qtyAdult,
+                            'unit_price' => $destination->price_adult,
+                            'subtotal' => $destination->price_adult * $qtyAdult,
+                        ];
+                    }
+                    if ($qtyChild > 0) {
+                        $itemsToCreate[] = [
+                            'destination_id' => $destination->id,
+                            'ticket_type_id' => null,
+                            'ticket_name' => 'Anak-anak (' . $destination->name . ')',
+                            'quantity' => $qtyChild,
+                            'unit_price' => $destination->price_child,
+                            'subtotal' => $destination->price_child * $qtyChild,
+                        ];
+                    }
+                }
+                
+                $totalAmount += $itemTotal;
+            }
+
+            if (empty($itemsToCreate)) {
+                return back()->withInput()->withErrors(['cart' => 'Item pesanan tidak valid atau belum ditambahkan.']);
+            }
+
+            // Check Quota
+            $quota = VisitQuota::where('date', $request->visit_date)->first();
+            if ($quota && $quota->is_blocked) {
+                return back()->withInput()->withErrors(['visit_date' => 'Maaf, tanggal ini tidak tersedia untuk kunjungan.']);
+            }
+            if ($quota && ($quota->used_quota + $totalTickets > $quota->max_quota)) {
+                return back()->withInput()->withErrors(['visit_date' => 'Maaf, kuota kunjungan pada tanggal ini penuh.']);
+            }
+
+            // Check Stock for each destination
+            foreach ($destinationQuantities as $destId => $qtyRequested) {
+                $destination = Destination::findOrFail($destId);
+                if (!is_null($destination->total_stock)) {
+                    $availableStock = $destination->getAvailableStock($request->visit_date);
+                    if ($qtyRequested > $availableStock) {
+                        return back()->withInput()->withErrors(['visit_date' => 'Maaf, sisa ketersediaan ' . $destination->name . ' untuk tanggal ini hanya ' . $availableStock . ' unit.']);
+                    }
                 }
             }
 
@@ -96,17 +158,10 @@ class ReservationController extends Controller
                 $quota->increment('used_quota', $totalTickets);
             }
 
-            if ($destination->pricing_type === 'per_package') {
-                $totalAmount = $destination->price_adult * $request->tickets_adult;
-            } else {
-                $totalAmount = ($destination->price_adult * $request->tickets_adult) + ($destination->price_child * $request->tickets_child);
-            }
-
             $orderCode = 'WG-' . date('Ymd') . '-' . strtoupper(Str::random(5));
             $order = Order::create([
                 'order_code' => $orderCode,
                 'user_id' => auth()->id(),
-                'destination_id' => $destination->id,
                 'visitor_name' => $request->visitor_name,
                 'phone' => $request->phone,
                 'email' => $request->email ?? '',
@@ -115,44 +170,10 @@ class ReservationController extends Controller
                 'status' => 'PENDING',
             ]);
 
-            if ($destination->pricing_type === 'per_package') {
-                if ($request->tickets_adult > 0) {
-                    OrderItem::create([
-                        'order_id' => $order->id,
-                        'ticket_type_id' => null,
-                        'ticket_name' => 'Paket / Tenda',
-                        'quantity' => $request->tickets_adult,
-                        'unit_price' => $destination->price_adult,
-                        'subtotal' => $destination->price_adult * $request->tickets_adult,
-                    ]);
-                }
-            } else {
-                // Save details as order items (Adult)
-                if ($request->tickets_adult > 0) {
-                    OrderItem::create([
-                        'order_id' => $order->id,
-                        'ticket_type_id' => null, 
-                        'ticket_name' => 'Dewasa', 
-                        'quantity' => $request->tickets_adult,
-                        'unit_price' => $destination->price_adult,
-                        'subtotal' => $destination->price_adult * $request->tickets_adult,
-                    ]);
-                }
-                
-                // Save details as order items (Child)
-                if ($request->tickets_child > 0) {
-                    OrderItem::create([
-                        'order_id' => $order->id,
-                        'ticket_type_id' => null,
-                        'ticket_name' => 'Anak-anak',
-                        'quantity' => $request->tickets_child,
-                        'unit_price' => $destination->price_child,
-                        'subtotal' => $destination->price_child * $request->tickets_child,
-                    ]);
-                }
+            foreach ($itemsToCreate as $itemData) {
+                $itemData['order_id'] = $order->id;
+                OrderItem::create($itemData);
             }
-
-            $order->update(['total_amount' => $totalAmount]);
 
             // Request Snap Token
             $params = [

@@ -113,7 +113,7 @@
                             {{ \Carbon\Carbon::parse($order->visit_date)->format('d/m/Y') }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {{ $order->destination ? $order->destination->name : '-' }}
+                            {{ $order->items->count() > 0 ? $order->items->pluck('destination.name')->filter()->unique()->join(', ') : '-' }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                             {{ $order->visitor_name }}

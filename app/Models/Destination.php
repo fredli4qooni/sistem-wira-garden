@@ -40,11 +40,11 @@ class Destination extends Model
             return null; // Unlimited
         }
         
-        $bookedQuantity = OrderItem::whereHas('order', function ($query) use ($date) {
-            $query->where('destination_id', $this->id)
-                  ->whereDate('visit_date', $date)
-                  ->whereIn('status', ['PAID', 'COMPLETED']);
-        })->sum('quantity');
+        $bookedQuantity = OrderItem::where('destination_id', $this->id)
+            ->whereHas('order', function ($query) use ($date) {
+                $query->whereDate('visit_date', $date)
+                      ->whereIn('status', ['PAID', 'COMPLETED']);
+            })->sum('quantity');
         
         return max(0, $this->total_stock - $bookedQuantity);
     }

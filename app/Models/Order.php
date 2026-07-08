@@ -8,7 +8,6 @@ class Order extends Model
 {
     protected $fillable = [
         'user_id',
-        'destination_id',
         'order_code',
         'visitor_name',
         'phone',
@@ -19,11 +18,7 @@ class Order extends Model
         'snap_token',
     ];
 
-    public function destination()
-    {
-        return $this->belongsTo(Destination::class);
-    }
-    
+
     public function items()
     {
         return $this->hasMany(OrderItem::class);

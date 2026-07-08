@@ -12,7 +12,7 @@ class OrderController extends Controller
 {
     private function getFilteredOrders(Request $request)
     {
-        $query = Order::with('destination');
+        $query = Order::with('items.destination');
 
         if ($request->filled('search')) {
             $search = $request->search;

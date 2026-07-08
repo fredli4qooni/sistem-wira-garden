@@ -28,6 +28,14 @@
                             <p class="font-medium text-gray-900">{{ \Carbon\Carbon::parse($order->visit_date)->translatedFormat('d F Y') }}</p>
                         </div>
                     </div>
+                    <div class="mt-4 text-left border-t border-gray-100 pt-4">
+                        <p class="text-xs text-gray-500 uppercase mb-2">Daftar Pesanan</p>
+                        <ul class="text-sm font-medium text-gray-900 space-y-1">
+                            @foreach($order->items as $item)
+                                <li>{{ $item->quantity }}x {{ $item->ticket_name }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
                 </div>
                 
                 <div class="mt-8 text-center space-y-4">

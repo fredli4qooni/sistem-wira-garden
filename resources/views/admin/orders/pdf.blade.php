@@ -60,7 +60,7 @@
                     <td>
                         <strong>{{ $order->order_code }}</strong><br>
                         @if($order->destination)
-                        <small>{{ $order->destination->name }}</small>
+                        <small>{{ $order->items->pluck('destination.name')->filter()->unique()->join(', ') }}</small>
                         @endif
                     </td>
                     <td>{{ $order->visitor_name }}</td>

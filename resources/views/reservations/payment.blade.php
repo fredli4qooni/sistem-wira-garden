@@ -17,6 +17,10 @@
                     <span class="text-gray-500">Tanggal Kunjungan</span>
                     <span class="font-medium text-gray-900">{{ \Carbon\Carbon::parse($order->visit_date)->translatedFormat('d F Y') }}</span>
                 </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-500">Pesanan</span>
+                    <span class="font-medium text-gray-900 text-right">{{ $order->items->pluck('destination.name')->filter()->unique()->join(', ') }}</span>
+                </div>
                 <div class="flex justify-between font-bold text-lg pt-4 border-t border-gray-100">
                     <span>Total Pembayaran</span>
                     <span class="text-green-600">Rp {{ number_format($order->total_amount, 0, ',', '.') }}</span>

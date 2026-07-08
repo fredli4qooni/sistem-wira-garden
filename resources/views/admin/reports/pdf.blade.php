@@ -79,7 +79,7 @@
                 <td class="text-center">{{ $index + 1 }}</td>
                 <td><strong>{{ $order->order_code }}</strong></td>
                 <td>{{ \Carbon\Carbon::parse($order->visit_date)->format('d/m/Y') }}</td>
-                <td>{{ $order->destination ? $order->destination->name : '-' }}</td>
+                <td>{{ $order->items->count() > 0 ? $order->items->pluck('destination.name')->filter()->unique()->join(', ') : '-' }}</td>
                 <td>{{ $order->visitor_name }}</td>
                 <td class="text-center">{{ $order->items->sum('quantity') }}</td>
                 <td class="text-right">Rp {{ number_format($order->total_amount, 0, ',', '.') }}</td>

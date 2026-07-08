@@ -22,6 +22,7 @@
                                 <div>
                                     <h3 class="text-lg font-bold text-gray-900">Order: {{ $order->order_code }}</h3>
                                     <p class="text-sm text-gray-500 mt-1">Kunjungan: {{ \Carbon\Carbon::parse($order->visit_date)->translatedFormat('d F Y') }}</p>
+                                    <p class="text-sm text-gray-500 mt-1">Destinasi: {{ $order->items->pluck('destination.name')->filter()->unique()->join(', ') }}</p>
                                     <p class="text-sm font-medium text-gray-900 mt-1">Total: Rp {{ number_format($order->total_amount, 0, ',', '.') }}</p>
                                 </div>
                                 <div class="text-right">
