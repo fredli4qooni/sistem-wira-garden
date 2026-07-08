@@ -193,8 +193,6 @@
                     @if(auth()->user()->role === 'admin')
                         <a href="{{ url('/admin/dashboard') }}" class="text-accent hover:text-white transition-colors font-medium">Dashboard Admin</a>
                     @endif
-                @else
-                    <a href="{{ route('login') }}" class="text-gray-400 hover:text-white transition-colors">Login Admin</a>
                 @endauth
             </div>
         </div>
