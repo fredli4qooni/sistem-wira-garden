@@ -105,14 +105,13 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                             <form action="{{ route('admin.orders.updateStatus', $order) }}" method="POST" class="inline-flex items-center gap-2">
                                 @csrf
-                                <select name="status" class="text-sm border-gray-200 rounded-lg py-1.5 focus:ring-secondary focus:border-secondary bg-gray-50 hover:bg-white transition-colors cursor-pointer">
+                                <select name="status" onchange="this.form.submit()" class="text-sm border-gray-200 rounded-lg py-1.5 focus:ring-secondary focus:border-secondary bg-gray-50 hover:bg-white transition-colors cursor-pointer">
                                     <option value="PENDING" @if($order->status == 'PENDING') selected @endif>PENDING</option>
                                     <option value="PAID" @if($order->status == 'PAID') selected @endif>PAID</option>
                                     <option value="CONFIRMED" @if($order->status == 'CONFIRMED') selected @endif>CONFIRMED</option>
                                     <option value="COMPLETED" @if($order->status == 'COMPLETED') selected @endif>COMPLETED</option>
                                     <option value="CANCELLED" @if($order->status == 'CANCELLED') selected @endif>CANCELLED</option>
                                 </select>
-                                <button type="submit" class="bg-primary hover:bg-secondary text-white px-3 py-1.5 rounded-lg transition-colors font-medium text-xs shadow-sm">Simpan</button>
                             </form>
                         </td>
                     </tr>
