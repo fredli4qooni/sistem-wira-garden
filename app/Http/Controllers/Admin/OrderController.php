@@ -45,16 +45,6 @@ class OrderController extends Controller
         return view('admin.orders.index', compact('orders'));
     }
 
-    public function exportPdf(Request $request)
-    {
-        $orders = $this->getFilteredOrders($request)->get();
-        
-        $pdf = Pdf::loadView('admin.orders.pdf', compact('orders', 'request'))
-                  ->setPaper('a4', 'landscape');
-                  
-        return $pdf->download('Laporan_Pemesanan_Wira_Garden_' . date('Y-m-d') . '.pdf');
-    }
-
     public function updateStatus(Request $request, Order $order)
     {
         $request->validate(['status' => 'required|in:PENDING,PAID,CONFIRMED,COMPLETED,CANCELLED']);

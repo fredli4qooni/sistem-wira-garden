@@ -51,8 +51,7 @@ Route::get('/dashboard', function () {
 Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
-    Route::get('/orders/export-pdf', [OrderController::class, 'exportPdf'])->name('orders.exportPdf');
-    Route::post('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
+    Route::post('/orders/{order:id}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
     Route::resource('destinations', AdminDestinationController::class);
     Route::resource('galleries', AdminGalleryController::class);
     Route::resource('quotas', VisitQuotaController::class);

@@ -12,6 +12,16 @@
         </div>
     @endif
 
+    @if($errors->any())
+        <div class="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-xl mb-6 flex items-center shadow-sm">
+            <ul class="list-disc list-inside">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <div class="mb-6 bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
         <form action="{{ route('admin.orders.index') }}" method="GET" class="flex flex-col md:flex-row gap-4 items-end">
             <div class="flex-1">
@@ -46,14 +56,6 @@
                 </a>
             </div>
         </form>
-    </div>
-
-    <!-- Export Button -->
-    <div class="mb-4 flex justify-end">
-        <a href="{{ route('admin.orders.exportPdf', request()->query()) }}" target="_blank" class="bg-red-500 hover:bg-red-600 text-white px-5 py-2.5 rounded-xl transition-colors font-semibold shadow-sm inline-flex items-center gap-2">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-            Export Laporan PDF
-        </a>
     </div>
 
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
