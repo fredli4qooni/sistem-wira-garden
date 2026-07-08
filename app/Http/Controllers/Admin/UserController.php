@@ -25,9 +25,11 @@ class UserController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
+            'email' => 'required|email:rfc,dns|unique:users,email',
             'password' => 'required|string|min:8|confirmed',
             'role' => 'required|in:admin,user',
+        ], [
+            'email.email' => 'Format email tidak valid atau domain tidak ditemukan.',
         ]);
 
         $validated['password'] = bcrypt($validated['password']);
@@ -48,9 +50,11 @@ class UserController extends Controller
         
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $user->id,
+            'email' => 'required|email:rfc,dns|unique:users,email,' . $user->id,
             'password' => 'nullable|string|min:8|confirmed',
             'role' => 'required|in:admin,user',
+        ], [
+            'email.email' => 'Format email tidak valid atau domain tidak ditemukan.',
         ]);
 
         if (!empty($validated['password'])) {
