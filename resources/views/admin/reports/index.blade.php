@@ -43,7 +43,7 @@
             <h3 class="text-3xl font-bold text-gray-900">{{ number_format($totalReservations, 0, ',', '.') }}</h3>
         </div>
         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col justify-center">
-            <p class="text-sm font-semibold text-gray-500 mb-2">Total Pengunjung</p>
+            <p class="text-sm font-semibold text-gray-500 mb-2">Total Pemesanan</p>
             <h3 class="text-3xl font-bold text-gray-900">{{ number_format($totalVisitors, 0, ',', '.') }}</h3>
         </div>
         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col justify-center">

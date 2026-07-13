@@ -46,7 +46,7 @@
                 <span class="value">{{ number_format($totalReservations, 0, ',', '.') }}</span>
             </td>
             <td>
-                <span class="label">Total Pengunjung</span>
+                <span class="label">Total Pemesanan</span>
                 <span class="value">{{ number_format($totalVisitors, 0, ',', '.') }}</span>
             </td>
             <td>
