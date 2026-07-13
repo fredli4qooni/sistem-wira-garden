@@ -62,7 +62,6 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
     
     // Reports
     Route::get('/reports', [App\Http\Controllers\Admin\ReportController::class, 'index'])->name('reports.index');
-    Route::get('/reports/export-excel', [App\Http\Controllers\Admin\ReportController::class, 'exportExcel'])->name('reports.exportExcel');
     Route::get('/reports/export-pdf', [App\Http\Controllers\Admin\ReportController::class, 'exportPdf'])->name('reports.exportPdf');
 });
 

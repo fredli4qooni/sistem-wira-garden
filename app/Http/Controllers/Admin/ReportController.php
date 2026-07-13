@@ -89,45 +89,6 @@ class ReportController extends Controller
         ));
     }
 
-    public function exportExcel(Request $request)
-    {
-        $period = $request->input('period', 'this_month');
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
-
-        list($start, $end) = $this->getFilterDates($period, $startDate, $endDate);
-        
-        $orders = $this->getFilteredQuery($start, $end)->latest()->get();
-
-        $filename = "Laporan_Reservasi_{$start}_to_{$end}.csv";
-        $handle = fopen('php://output', 'w');
-
-        header('Content-Type: text/csv');
-        header('Content-Disposition: attachment; filename="' . $filename . '"');
-
-        fputcsv($handle, ['No', 'Kode Reservasi', 'Tanggal Kunjungan', 'Wisata', 'Nama Pengunjung', 'Jumlah Tiket', 'Total Bayar', 'Status']);
-
-        $count = 1;
-        foreach ($orders as $order) {
-            $totalTickets = $order->items->sum('quantity');
-            $wisata = $order->items->count() > 0 ? $order->items->pluck('destination.name')->filter()->unique()->join(', ') : '-';
-            
-            fputcsv($handle, [
-                $count++,
-                $order->order_code,
-                Carbon::parse($order->visit_date)->format('d/m/Y'),
-                $wisata,
-                $order->visitor_name,
-                $totalTickets,
-                $order->total_amount,
-                $order->status
-            ]);
-        }
-
-        fclose($handle);
-        exit;
-    }
-
     public function exportPdf(Request $request)
     {
         $period = $request->input('period', 'this_month');
