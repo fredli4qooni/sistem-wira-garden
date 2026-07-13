@@ -8,7 +8,6 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\TicketType;
 use App\Models\Destination;
-use App\Models\VisitQuota;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Midtrans\Config;
@@ -133,14 +132,6 @@ class ReservationController extends Controller
                 return back()->withInput()->withErrors(['cart' => 'Item pesanan tidak valid atau belum ditambahkan.']);
             }
 
-            // Check Quota
-            $quota = VisitQuota::where('date', $request->visit_date)->first();
-            if ($quota && $quota->is_blocked) {
-                return back()->withInput()->withErrors(['visit_date' => 'Maaf, tanggal ini tidak tersedia untuk kunjungan.']);
-            }
-            if ($quota && ($quota->used_quota + $totalTickets > $quota->max_quota)) {
-                return back()->withInput()->withErrors(['visit_date' => 'Maaf, kuota kunjungan pada tanggal ini penuh.']);
-            }
 
             // Check Stock for each destination
             foreach ($destinationQuantities as $destId => $qtyRequested) {
@@ -153,10 +144,6 @@ class ReservationController extends Controller
                 }
             }
 
-            // Update Quota if exists
-            if ($quota) {
-                $quota->increment('used_quota', $totalTickets);
-            }
 
             $orderCode = 'WG-' . date('Ymd') . '-' . strtoupper(Str::random(5));
             $order = Order::create([

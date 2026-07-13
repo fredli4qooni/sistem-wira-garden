@@ -72,7 +72,7 @@
             <h3 class="text-lg font-bold text-gray-800 font-heading">Selamat Datang di Admin Panel Wira Garden</h3>
         </div>
         <div class="p-6">
-            <p class="text-gray-600">Sistem ini memungkinkan Anda untuk mengelola destinasi, galeri, tiket, dan kuota kunjungan Wira Garden. Gunakan menu navigasi di sebelah kiri untuk mulai mengelola data.</p>
+            <p class="text-gray-600">Sistem ini memungkinkan Anda untuk mengelola destinasi, galeri, dan tiket Wira Garden. Gunakan menu navigasi di sebelah kiri untuk mulai mengelola data.</p>
         </div>
     </div>
 </x-app-layout>

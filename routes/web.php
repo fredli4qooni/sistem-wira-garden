@@ -21,7 +21,6 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\DestinationController as AdminDestinationController;
 use App\Http\Controllers\Admin\GalleryController as AdminGalleryController;
-use App\Http\Controllers\Admin\VisitQuotaController;
 use App\Http\Controllers\Admin\UserController;
 
 Route::get('/api/check-stock', function (Illuminate\Http\Request $request) {
@@ -55,7 +54,6 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
     Route::post('/orders/{order:id}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
     Route::resource('destinations', AdminDestinationController::class);
     Route::resource('galleries', AdminGalleryController::class);
-    Route::resource('quotas', VisitQuotaController::class);
     Route::resource('facilities', App\Http\Controllers\Admin\FacilityController::class);
     Route::resource('categories', App\Http\Controllers\Admin\CategoryController::class);
     Route::resource('users', UserController::class)->except('show');
