@@ -223,4 +223,16 @@ class ReservationController extends Controller
         
         return view('reservations.success', compact('order'));
     }
+
+    public function downloadTicket(Order $order)
+    {
+        if ($order->user_id !== auth()->id() && auth()->user()->role !== 'admin') {
+            abort(403);
+        }
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('reservations.ticket_pdf', compact('order'))
+                  ->setPaper('a5', 'portrait');
+                  
+        return $pdf->download('E-Ticket_' . $order->order_code . '.pdf');
+    }
 }

@@ -37,6 +37,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/reservasi', [ReservationController::class, 'store'])->name('reservations.store');
     Route::get('/reservasi/{order:order_code}/payment', [ReservationController::class, 'payment'])->name('reservations.payment');
     Route::get('/reservasi/{order:order_code}/success', [ReservationController::class, 'success'])->name('reservations.success');
+    Route::get('/reservasi/{order:order_code}/ticket', [ReservationController::class, 'downloadTicket'])->name('reservations.ticket');
     
     Route::get('/riwayat-pesanan', [App\Http\Controllers\User\OrderController::class, 'index'])->name('user.orders.index');
     Route::get('/riwayat-pesanan/{order:order_code}', [App\Http\Controllers\User\OrderController::class, 'show'])->name('user.orders.show');

@@ -40,9 +40,15 @@
                 
                 <div class="mt-8 text-center space-y-4">
                     <p class="text-gray-600 text-sm">Harap simpan atau screenshot halaman ini dan tunjukkan kepada petugas di loket masuk.</p>
-                    <a href="{{ url('/') }}" class="inline-flex items-center px-6 py-3 border border-gray-300 shadow-sm text-base font-medium rounded-full text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors">
-                        Kembali ke Beranda
-                    </a>
+                    <div class="flex flex-col sm:flex-row justify-center gap-3">
+                        <a href="{{ route('reservations.ticket', $order->order_code) }}" target="_blank" class="inline-flex items-center justify-center px-6 py-3 border border-transparent shadow-sm text-base font-medium rounded-full text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                            Download Tiket PDF
+                        </a>
+                        <a href="{{ url('/') }}" class="inline-flex items-center justify-center px-6 py-3 border border-gray-300 shadow-sm text-base font-medium rounded-full text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors">
+                            Kembali ke Beranda
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
