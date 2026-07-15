@@ -77,9 +77,7 @@
         <div class="p-6 border-b border-gray-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <h3 class="text-lg font-bold text-gray-900 font-heading">Detail Laporan Reservasi</h3>
             <div class="flex gap-2">
-                <a href="{{ route('admin.reports.exportExcel', request()->query()) }}" class="inline-flex items-center gap-2 bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 px-4 py-2 rounded-xl transition-colors font-semibold text-sm shadow-sm">
-                    Export Excel
-                </a>
+
                 <a href="{{ route('admin.reports.exportPdf', request()->query()) }}" target="_blank" class="inline-flex items-center gap-2 bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 px-4 py-2 rounded-xl transition-colors font-semibold text-sm shadow-sm">
                     Cetak PDF
                 </a>
